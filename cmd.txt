@@ -1,0 +1,2 @@
+cd producer
+mvn exec:java -Dexec.mainClass="com.example.TransactionProducer"
