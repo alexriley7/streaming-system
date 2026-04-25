@@ -17,6 +17,9 @@ public class TransactionConsumer {
 
         Properties props = new Properties();
 
+        String broker = System.getenv().getOrDefault("KAFKA_BROKER", "localhost:9092");
+        props.put("bootstrap.servers", broker);
+
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "transaction-consumer-group");

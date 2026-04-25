@@ -18,6 +18,11 @@ public class TransactionProducer {
 
         Properties props = new Properties();
 
+        String broker = System.getenv().getOrDefault("KAFKA_BROKER", "localhost:9092");
+        props.put("bootstrap.servers", broker);
+
+        
+
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
