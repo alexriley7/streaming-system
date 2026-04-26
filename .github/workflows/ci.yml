@@ -53,12 +53,13 @@ jobs:
           docker push ghcr.io/${{ github.repository }}/consumer:${{ github.sha }}
 
       ### Update deploy repo
+      #cd streaming-system-deploy
 
        
       - name: Update deploy repo
         run: |
           git clone https://github.com/alexriley7/streaming-system-deploy.git
-          cd streaming-system-deploy
+          
 
           sed -i "s|image:.*producer.*|image: $IMAGE_PRODUCER:${{ github.sha }}|" producer-deployment.yaml
           sed -i "s|image:.*consumer.*|image: $IMAGE_CONSUMER:${{ github.sha }}|" consumer-deployment.yaml
