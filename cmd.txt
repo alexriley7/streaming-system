@@ -1,5 +1,0 @@
-cd producer
-mvn exec:java -Dexec.mainClass="com.example.TransactionProducer"
-
-cd consumer
-mvn exec:java -Dexec.mainClass="com.example.TransactionConsumer"
