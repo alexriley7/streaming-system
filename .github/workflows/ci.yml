@@ -52,7 +52,7 @@ jobs:
         run: |
           docker push ghcr.io/${{ github.repository }}/consumer:${{ github.sha }}
 
-      ## Update deploy repo
+      ### Update deploy repo
 
        
       - name: Update deploy repo
