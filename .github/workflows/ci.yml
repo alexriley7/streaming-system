@@ -54,7 +54,7 @@ jobs:
       # 7. Clone deploy repo (WITH AUTH)##
       - name: Clone deploy repo
         run: |
-          git clone https://x-access-token:${{ secrets.GH_PAT }}@github.com/alexriley7/streaming-system-deploy.git
+          git clone https://${{ secrets.GH_PAT }}@github.com/alexriley7/streaming-system-deploy.git
 
       # 8. Update images
       - name: Update deployment files
