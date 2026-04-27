@@ -5,6 +5,11 @@ on:
     branches: [main]
 
 
+env:
+  IMAGE_PRODUCER: ghcr.io/${{ github.repository }}/producer
+  IMAGE_CONSUMER: ghcr.io/${{ github.repository }}/consumer
+
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,40 +38,16 @@ jobs:
       - name: Login to GHCR
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      # 5. Build Producer Image
-      - name: Build Producer
+      # 5. Build & Push Producer
+      - name: Build & Push Producer
         run: |
-          docker build -t ghcr.io/${{ github.repository }}/producer:${{ github.sha }} ./producer
+          docker build -t $IMAGE_PRODUCER:${{ github.sha }} ./producer
+          docker push $IMAGE_PRODUCER:${{ github.sha }}
 
-      # 6. Push Producer Image
-      - name: Push Producer
+      # 6. Build & Push Consumer
+      - name: Build & Push Consumer
         run: |
-          docker push ghcr.io/${{ github.repository }}/producer:${{ github.sha }}
+          docker build -t $IMAGE_CONSUMER:${{ github.sha }} ./consumer
+          docker push $IMAGE_CONSUMER:${{ github.sha }}
 
-      # 7. Build Consumer Image
-      - name: Build Consumer
-        run: |
-          docker build -t ghcr.io/${{ github.repository }}/consumer:${{ github.sha }} ./consumer
 
-      # 8. Push Consumer Image
-      - name: Push Consumer
-        run: |
-          docker push ghcr.io/${{ github.repository }}/consumer:${{ github.sha }}
-
-      ### Update deploy repo
-      #cd streaming-system-deploy
-
-       
-      - name: Update deploy repo
-        run: |
-          git clone https://github.com/alexriley7/streaming-system-deploy.git
-          
-
-          sed -i "s|image:.*producer.*|image: $IMAGE_PRODUCER:${{ github.sha }}|" producer-deployment.yaml
-          sed -i "s|image:.*consumer.*|image: $IMAGE_CONSUMER:${{ github.sha }}|" consumer-deployment.yaml
-
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-
-          git commit -am "update images to ${{ github.sha }}"
-          git push
