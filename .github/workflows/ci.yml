@@ -51,3 +51,27 @@ jobs:
           docker push $IMAGE_CONSUMER:${{ github.sha }}
 
 
+      # 7. Clone deploy repo (WITH AUTH)
+      - name: Clone deploy repo
+        run: |
+          git clone https://x-access-token:${{ secrets.GH_PAT }}@github.com/alexriley7/streaming-system-deploy.git
+
+      # 8. Update images
+      - name: Update deployment files
+        run: |
+          cd streaming-system-deploy
+
+          sed -i "s|image:.*producer.*|image: $IMAGE_PRODUCER:${{ github.sha }}|" producer/deployment.yaml
+          sed -i "s|image:.*consumer.*|image: $IMAGE_CONSUMER:${{ github.sha }}|" consumer/deployment.yaml
+
+      # 9. Commit & push
+      - name: Commit & Push
+        run: |
+          cd streaming-system-deploy
+
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          git add .
+          git commit -m "update images to ${{ github.sha }}" || echo "No changes"
+          git push
