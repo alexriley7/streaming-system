@@ -51,7 +51,7 @@ jobs:
           docker push $IMAGE_CONSUMER:${{ github.sha }}
 
 
-      # 7. Clone deploy repo (WITH AUTH)
+      # 7. Clone deploy repo (WITH AUTH)##
       - name: Clone deploy repo
         run: |
           git clone https://x-access-token:${{ secrets.GH_PAT }}@github.com/alexriley7/streaming-system-deploy.git
@@ -61,8 +61,8 @@ jobs:
         run: |
           cd streaming-system-deploy
 
-          sed -i "s|image:.*producer.*|image: $IMAGE_PRODUCER:${{ github.sha }}|" producer/deployment.yaml
-          sed -i "s|image:.*consumer.*|image: $IMAGE_CONSUMER:${{ github.sha }}|" consumer/deployment.yaml
+          sed -i "s|image:.*producer.*|image: $IMAGE_PRODUCER:${{ github.sha }}|" producer/producer-deployment.yaml
+          sed -i "s|image:.*consumer.*|image: $IMAGE_CONSUMER:${{ github.sha }}|" consumer/consumer-deployment.yaml
 
       # 9. Commit & push
       - name: Commit & Push
