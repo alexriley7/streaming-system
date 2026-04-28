@@ -31,8 +31,17 @@ jobs:
           java-version: 17
 
       # 3. Build project
-      - name: Build with Maven
-        run: mvn clean package -DskipTests
+      #- name: Build with Maven
+      #  run: mvn clean package -DskipTests
+
+      # 3. Build PRODUCER ONLY
+      - name: Build Producer
+        run: mvn clean package -pl producer -am -DskipTests
+
+      # 4. Build CONSUMER ONLY
+      - name: Build Consumer
+        run: mvn clean package -pl consumer -am -DskipTests
+
 
       # 4. Login to GitHub Container Registry #
       - name: Login to GHCR
