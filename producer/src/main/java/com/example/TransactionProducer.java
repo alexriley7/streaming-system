@@ -81,7 +81,7 @@ public class TransactionProducer {
         String userId = "user-" + random.nextInt(100);
         String txId = UUID.randomUUID().toString();
         double amount = Math.round(random.nextDouble() * 1000 * 100.0) / 100.0;
-        String currency = "USDT";
+        String currency = "Hello my dear";
         long timestamp = System.currentTimeMillis();
 
         return new Transaction(userId, txId, amount, currency, timestamp);
