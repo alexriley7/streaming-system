@@ -20,11 +20,19 @@ public class TransactionProducer {
 
         String broker = System.getenv().getOrDefault("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092");
 
-        props.put("bootstrap.servers", broker);
+        //modified this line:
+        // 
+        // props.put("bootstrap.servers", broker);
+
+        //added this line:
+
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, broker);
 
         
 
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        // this line may mess with kafka k8 cluster connection :
+        // 
+        // props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
