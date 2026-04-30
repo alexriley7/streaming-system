@@ -1,4 +1,4 @@
-package com.example;
+package com.example.FlinkTransformationJob;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
