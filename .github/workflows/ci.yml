@@ -4,11 +4,10 @@ on:
   push:
     branches: [main]
 
-
 env:
   IMAGE_PRODUCER: ghcr.io/${{ github.repository }}/producer
   IMAGE_CONSUMER: ghcr.io/${{ github.repository }}/consumer
-
+  IMAGE_FLINK: ghcr.io/${{ github.repository }}/flink-transformation
 
 jobs:
   build:
@@ -30,20 +29,17 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      # 3. Build project
-      #- name: Build with Maven
-      #  run: mvn clean package -DskipTests
-
-      # 3. Build PRODUCER ONLY
+      # 3. Build ONLY required modules (faster)
       - name: Build Producer
         run: mvn clean package -pl producer -am -DskipTests
 
-      # 4. Build CONSUMER ONLY
       - name: Build Consumer
         run: mvn clean package -pl consumer -am -DskipTests
 
+      - name: Build Flink Transformation
+        run: mvn clean package -pl flink-transformation -am -DskipTests
 
-      # 4. Login to GitHub Container Registry #
+      # 4. Login to GHCR
       - name: Login to GHCR
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
@@ -59,21 +55,27 @@ jobs:
           docker build -t $IMAGE_CONSUMER:${{ github.sha }} ./consumer
           docker push $IMAGE_CONSUMER:${{ github.sha }}
 
+      # 7. Build & Push Flink
+      - name: Build & Push Flink
+        run: |
+          docker build -t $IMAGE_FLINK:${{ github.sha }} ./flink-transformation
+          docker push $IMAGE_FLINK:${{ github.sha }}
 
-      # 7. Clone deploy repo (WITH AUTH)##
+      # 8. Clone deploy repo
       - name: Clone deploy repo
         run: |
           git clone https://${{ secrets.GH_PAT }}@github.com/alexriley7/streaming-system-deploy.git
 
-      # 8. Update images
+      # 9. Update image tags
       - name: Update deployment files
         run: |
           cd streaming-system-deploy
 
           sed -i "s|image:.*producer.*|image: $IMAGE_PRODUCER:${{ github.sha }}|" producer/producer-deployment.yaml
           sed -i "s|image:.*consumer.*|image: $IMAGE_CONSUMER:${{ github.sha }}|" consumer/consumer-deployment.yaml
+          sed -i "s|image:.*flink-transformation.*|image: $IMAGE_FLINK:${{ github.sha }}|" flink/flink-transformation-deployment.yaml
 
-      # 9. Commit & push
+      # 10. Commit & push
       - name: Commit & Push
         run: |
           cd streaming-system-deploy
