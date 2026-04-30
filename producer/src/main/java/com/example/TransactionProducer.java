@@ -1,4 +1,5 @@
 package com.example;
+
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 
@@ -18,26 +19,16 @@ public class TransactionProducer {
 
         Properties props = new Properties();
 
-        String broker = System.getenv().getOrDefault("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092");
+        String broker = System.getenv()
+                .getOrDefault("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092");
 
-        //modified this line:
-        // 
-        // props.put("bootstrap.servers", broker);
-
-        //added this line:
-
+        // ✅ correct bootstrap usage
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, broker);
-
-        
-
-        // this line may mess with kafka k8 cluster connection :
-        // 
-        // props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
-        // 🔥 Important for reliability # HEY HEY HEY #########
+        // reliability
         props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
         props.put(ProducerConfig.ACKS_CONFIG, "all");
         props.put(ProducerConfig.RETRIES_CONFIG, Integer.MAX_VALUE);
@@ -45,15 +36,14 @@ public class TransactionProducer {
         KafkaProducer<String, String> producer = new KafkaProducer<>(props);
 
         // ✅ FEATURE FLAG
-        //boolean enabled = Boolean.parseBoolean(
-        //        System.getenv().getOrDefault("ENABLE_PRODUCER", "true")
-        //);
+        boolean enabled = Boolean.parseBoolean(
+                System.getenv().getOrDefault("ENABLE_PRODUCER", "true")
+        );
 
         System.out.println("Starting transaction producer...");
         System.out.println("ENABLE_PRODUCER = " + enabled);
 
         try {
-        /*
             if (!enabled) {
                 // 🧠 Keep pod alive but do nothing
                 System.out.println("Producer DISABLED. Idling...");
@@ -61,8 +51,8 @@ public class TransactionProducer {
                     Thread.sleep(60000);
                 }
             }
-            */
 
+            // 🚀 Normal production loop
             while (true) {
 
                 Transaction tx = generateTransaction();
@@ -83,7 +73,7 @@ public class TransactionProducer {
                 });
 
                 // control throughput
-                Thread.sleep(200); // ~5 events/sec
+                Thread.sleep(200);
             }
 
         } catch (Exception e) {
