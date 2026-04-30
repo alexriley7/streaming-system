@@ -73,7 +73,7 @@ jobs:
 
           sed -i "s|image:.*producer.*|image: $IMAGE_PRODUCER:${{ github.sha }}|" producer/producer-deployment.yaml
           sed -i "s|image:.*consumer.*|image: $IMAGE_CONSUMER:${{ github.sha }}|" consumer/consumer-deployment.yaml
-          sed -i "s|image:.*flink-transformation.*|image: $IMAGE_FLINK:${{ github.sha }}|" flink/flink-transformation-deployment.yaml
+          sed -i "s|image:.*flink-transformation.*|image: $IMAGE_FLINK:${{ github.sha }}|" flink-transformation/flink-transformation-deployment.yaml
 
       # 10. Commit & push
       - name: Commit & Push
