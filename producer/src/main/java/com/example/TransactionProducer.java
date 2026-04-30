@@ -44,9 +44,24 @@ public class TransactionProducer {
 
         KafkaProducer<String, String> producer = new KafkaProducer<>(props);
 
+        // ✅ FEATURE FLAG
+        boolean enabled = Boolean.parseBoolean(
+                System.getenv().getOrDefault("ENABLE_PRODUCER", "true")
+        );
+
         System.out.println("Starting transaction producer...");
+        System.out.println("ENABLE_PRODUCER = " + enabled);
 
         try {
+
+            if (!enabled) {
+                // 🧠 Keep pod alive but do nothing
+                System.out.println("Producer DISABLED. Idling...");
+                while (true) {
+                    Thread.sleep(60000);
+                }
+            }
+            
             while (true) {
 
                 Transaction tx = generateTransaction();
