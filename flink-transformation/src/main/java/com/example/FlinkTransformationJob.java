@@ -27,18 +27,11 @@ public class FlinkTransformationJob {
 
     public static void main(String[] args) throws Exception {
 
+
         final StreamExecutionEnvironment env =
                 StreamExecutionEnvironment.getExecutionEnvironment();
 
-
         env.setParallelism(1);
-
-        env.setRestartStrategy(
-        RestartStrategies.fixedDelayRestart(
-                3,
-                10000
-                )
-                );
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -58,6 +51,7 @@ public class FlinkTransformationJob {
         props.setProperty("group.id", groupId);
         props.setProperty("auto.offset.reset", "earliest");
         
+        
 
 
         // --- SOURCE ---
@@ -68,7 +62,7 @@ public class FlinkTransformationJob {
                         props
                 );
 
-        consumer.setStartFromLatest();
+        //consumer.setStartFromLatest();
 
         // --- TRANSFORMATION ---
         var stream = env
