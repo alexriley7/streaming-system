@@ -33,6 +33,13 @@ public class FlinkTransformationJob {
 
         env.setParallelism(1);
 
+        env.setRestartStrategy(
+        RestartStrategies.fixedDelayRestart(
+                3,
+                10000
+                )
+                );
+
         ObjectMapper mapper = new ObjectMapper();
 
         // ✅ Kafka config (IMPORTANT: cluster DNS, not localhost)
@@ -50,6 +57,7 @@ public class FlinkTransformationJob {
         props.setProperty("bootstrap.servers", brokers);
         props.setProperty("group.id", groupId);
         props.setProperty("auto.offset.reset", "earliest");
+        
 
 
         // --- SOURCE ---
