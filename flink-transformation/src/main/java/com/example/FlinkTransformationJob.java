@@ -94,7 +94,7 @@ public class FlinkTransformationJob {
                 })
                 .filter(value -> value != null);
 
-        // --- SINK ---###
+        // --- SINK ---####
         FlinkKafkaProducer<String> producer =
                 new FlinkKafkaProducer<>(
                         "output-topic-v1",
