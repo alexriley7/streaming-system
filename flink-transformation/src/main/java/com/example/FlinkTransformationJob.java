@@ -30,25 +30,27 @@ public class FlinkTransformationJob {
         final StreamExecutionEnvironment env =
                 StreamExecutionEnvironment.getExecutionEnvironment();
 
+
+        env.setParallelism(1);
+
         ObjectMapper mapper = new ObjectMapper();
 
-        // Kafka config
-        Properties props = new Properties();
-        props.setProperty(
-                "bootstrap.servers",
-                System.getenv().getOrDefault(
-                        "KAFKA_BOOTSTRAP_SERVERS",
-                        "localhost:9092"
-                )
+        // ✅ Kafka config (IMPORTANT: cluster DNS, not localhost)
+        String brokers = System.getenv().getOrDefault(
+                "KAFKA_BOOTSTRAP_SERVERS",
+                "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
         );
 
-        props.setProperty(
-                "group.id",
-                System.getenv().getOrDefault(
-                        "GROUP_ID",
-                        "flink-consumer-v1"
-                )
+        String groupId = System.getenv().getOrDefault(
+                "GROUP_ID",
+                "flink-consumer-v1"
         );
+
+        Properties props = new Properties();
+        props.setProperty("bootstrap.servers", brokers);
+        props.setProperty("group.id", groupId);
+        props.setProperty("auto.offset.reset", "earliest");
+
 
         // --- SOURCE ---
         FlinkKafkaConsumer<String> consumer =
