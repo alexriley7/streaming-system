@@ -98,7 +98,7 @@ public class FlinkTransformationJob {
                         // 🔥 enrichment logic
                         enriched.highValue = tx.amount > 500;
                         enriched.normalizedCurrency =
-                                tx.currency.replace("Hello ", "");
+                                tx.currency.replace("Hello ", "HelloTest");
 
                         return mapper.writeValueAsString(enriched);
 
