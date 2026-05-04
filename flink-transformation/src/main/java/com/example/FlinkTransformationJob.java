@@ -46,7 +46,7 @@ public class FlinkTransformationJob {
 
         String groupId = System.getenv().getOrDefault(
                 "GROUP_ID",
-                "flink-consumer-v2"
+                "flink-consumer-v1"
         );
 
         //Properties props = new Properties();
