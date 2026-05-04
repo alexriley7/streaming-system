@@ -37,7 +37,7 @@ public class TransactionProducer {
 
         // ✅ FEATURE FLAG
         boolean enabled = Boolean.parseBoolean(
-                System.getenv().getOrDefault("ENABLE_PRODUCER", "true")
+                System.getenv().getOrDefault("ENABLE_PRODUCER", "false")
         );
 
         System.out.println("Starting transaction producer...");
