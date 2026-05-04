@@ -6,6 +6,9 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer.Semantic;
+
+
 import java.util.Properties;
 
 // --- Transaction POJO ---#
@@ -31,7 +34,7 @@ public class FlinkTransformationJob {
         final StreamExecutionEnvironment env =
                 StreamExecutionEnvironment.getExecutionEnvironment();
 
-        env.setParallelism(1);
+        env.setParallelism(3);
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -43,13 +46,21 @@ public class FlinkTransformationJob {
 
         String groupId = System.getenv().getOrDefault(
                 "GROUP_ID",
-                "flink-consumer-v1"
+                "flink-consumer-v2"
         );
 
-        Properties props = new Properties();
-        props.setProperty("bootstrap.servers", brokers);
-        props.setProperty("group.id", groupId);
-        props.setProperty("auto.offset.reset", "earliest");
+        //Properties props = new Properties();
+        //props.setProperty("bootstrap.servers", brokers);
+        //props.setProperty("group.id", groupId);
+        //props.setProperty("auto.offset.reset", "earliest");
+
+        Properties consumerProps = new Properties();
+        consumerProps.setProperty("bootstrap.servers", brokers);
+        consumerProps.setProperty("group.id", groupId);
+        consumerProps.setProperty("auto.offset.reset", "earliest");
+
+        Properties producerProps = new Properties();
+        producerProps.setProperty("bootstrap.servers", brokers);
         
         
 
@@ -59,10 +70,14 @@ public class FlinkTransformationJob {
                 new FlinkKafkaConsumer<>(
                         "input-topic",
                         new SimpleStringSchema(),
-                        props
+                        consumerProps
                 );
 
-        //consumer.setStartFromLatest();
+        
+
+        //consumer.setStartFromGroupOffsets();
+
+        consumer.setStartFromEarliest();
 
         // --- TRANSFORMATION ---
         var stream = env
@@ -99,7 +114,8 @@ public class FlinkTransformationJob {
                 new FlinkKafkaProducer<>(
                         "output-topic-v1",
                         new SimpleStringSchema(),
-                        props
+                        producerProps,
+                        Semantic.AT_LEAST_ONCE   // ✅ important
                 );
 
         stream.addSink(producer);
