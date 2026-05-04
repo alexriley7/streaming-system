@@ -6,7 +6,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer.Semantic;
+//import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer.Semantic;
 
 
 import java.util.Properties;
@@ -114,8 +114,8 @@ public class FlinkTransformationJob {
                 new FlinkKafkaProducer<>(
                         "output-topic-v1",
                         new SimpleStringSchema(),
-                        producerProps,
-                        Semantic.AT_LEAST_ONCE   // ✅ important
+                        producerProps
+                        //Semantic.AT_LEAST_ONCE   // ✅ important
                 );
 
         stream.addSink(producer);
