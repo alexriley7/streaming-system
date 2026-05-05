@@ -64,7 +64,7 @@ jobs:
       # 7. Build & Push Flink
       - name: Build & Push Shadow Flink Transformation
         run: |
-          docker build -t $IMAGE_FLINK:${{ github.sha }} ./shadow-flink-transformation
+          docker build -t $IMAGE_FLINK:${{ github.sha }} ./flink-transformation-shadow
           docker push $IMAGE_FLINK:${{ github.sha }}
 
       # 8. Clone deploy repo
