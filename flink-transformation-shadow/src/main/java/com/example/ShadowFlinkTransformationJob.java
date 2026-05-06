@@ -26,7 +26,7 @@ class EnrichedTransaction extends Transaction {
     public String normalizedCurrency;
 }
 
-public class FlinkTransformationJob {
+public class ShadowFlinkTransformationJob {
 
     public static void main(String[] args) throws Exception {
 
