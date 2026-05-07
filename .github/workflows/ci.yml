@@ -8,6 +8,7 @@ env:
   IMAGE_PRODUCER: ghcr.io/${{ github.repository }}/producer
   IMAGE_CONSUMER: ghcr.io/${{ github.repository }}/consumer
   IMAGE_FLINK: ghcr.io/${{ github.repository }}/flink-transformation
+  IMAGE_FLINK_SHADOW: ghcr.io/${{ github.repository }}/flink-transformation-shadow
 
 jobs:
   build:
@@ -39,6 +40,9 @@ jobs:
       - name: Build Flink Transformation
         run: mvn clean package -pl flink-transformation -am -DskipTests
 
+      - name: Build Flink Transformation
+        run: mvn clean package -pl flink-transformation-shadow -am -DskipTests
+
       # 4. Login to GHCR
       - name: Login to GHCR
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
@@ -61,11 +65,11 @@ jobs:
           docker build -t $IMAGE_FLINK:${{ github.sha }} ./flink-transformation
           docker push $IMAGE_FLINK:${{ github.sha }}
 
-      # 7. Build & Push Flink
+      # 7. Build & Push Flink Shadow
       - name: Build & Push Shadow Flink Transformation
         run: |
-          docker build -t $IMAGE_FLINK:${{ github.sha }} ./flink-transformation-shadow
-          docker push $IMAGE_FLINK:${{ github.sha }}
+          docker build -t $IMAGE_FLINK_SHADOW:${{ github.sha }} ./flink-transformation-shadow
+          docker push $IMAGE_FLINK_SHADOW:${{ github.sha }}
 
       # 8. Clone deploy repo
       - name: Clone deploy repo
