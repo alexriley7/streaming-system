@@ -41,7 +41,7 @@ jobs:
         run: mvn clean package -pl flink-transformation -am -DskipTests
 
       - name: Build Flink Transformation
-        run: mvn clean package -pl flink-transformation-shadow -am -DskipTests
+        run: mvn clean package -pl shadow-flink-transformation -am -DskipTests
 
       # 4. Login to GHCR
       - name: Login to GHCR
