@@ -11,7 +11,7 @@ import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 
 import java.util.Properties;
 
-// --- Transaction POJO ---##
+// --- Transaction POJO ---###
 class Transaction {
     public String userId;
     public String transactionId;
