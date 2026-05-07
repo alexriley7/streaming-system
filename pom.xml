@@ -11,7 +11,7 @@
     <module>producer</module>
     <module>consumer</module>
     <module>flink-transformation</module>
-    <module>flink-transformation-shadow</module>
+    <module>shadow-flink-transformation</module>
   </modules>
 
   <properties>
