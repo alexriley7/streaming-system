@@ -109,7 +109,7 @@ public class ShadowFlinkTransformationJob {
                 })
                 .filter(value -> value != null);
 
-        // --- SINK ---########
+        // --- SINK ---#########
         FlinkKafkaProducer<String> producer =
                 new FlinkKafkaProducer<>(
                         "shadow-output-topic",
