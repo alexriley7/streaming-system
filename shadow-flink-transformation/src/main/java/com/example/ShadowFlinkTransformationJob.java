@@ -65,7 +65,7 @@ public class ShadowFlinkTransformationJob {
         
 
 
-        // --- SOURCE ---##
+        // --- SOURCE ---###
         FlinkKafkaConsumer<String> consumer =
                 new FlinkKafkaConsumer<>(
                         "input-topic",
