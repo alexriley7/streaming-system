@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-shadow-diff-service
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: kafka-shadow-diff-service
+
+  template:
+    metadata:
+      labels:
+        app: kafka-shadow-diff-service
+
+    spec:
+      containers:
+        - name: diff-service
+
+          image: kafka-shadow-diff-service:latest
+
+          imagePullPolicy: Never
+
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+
+            - name: GROUP_ID
+              value: "shadow-diff-service"
+
+            - name: V1_TOPIC
+              value: "output-topic-v1"
+
+            - name: SHADOW_TOPIC
+              value: "shadow-output-topic"
+
+            - name: OUTPUT_FILE
+              value: "/data/diff-results.json"
+
+          volumeMounts:
+            - name: diff-storage
+              mountPath: /data
+
+      volumes:
+        - name: diff-storage
+          persistentVolumeClaim:
+            claimName: diff-service-pvc

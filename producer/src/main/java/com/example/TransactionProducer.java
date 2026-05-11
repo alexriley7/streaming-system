@@ -22,7 +22,7 @@ public class TransactionProducer {
         String broker = System.getenv()
                 .getOrDefault("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092");
 
-        // ✅ correct bootstrap usage
+        // ✅ correct bootstrap usage ###
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, broker);
 
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
