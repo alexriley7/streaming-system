@@ -61,6 +61,9 @@ public class ShadowFlinkTransformationJob {
 
         Properties producerProps = new Properties();
         producerProps.setProperty("bootstrap.servers", brokers);
+
+
+   
         
         
 
@@ -72,6 +75,16 @@ public class ShadowFlinkTransformationJob {
                         new SimpleStringSchema(),
                         consumerProps
                 );
+
+        // FEATURE FLAG
+        
+        boolean enabled = Boolean.parseBoolean(
+                System.getenv()
+                        .getOrDefault(
+                                "ENABLE_JOB",
+                                "true"
+                        )
+        );
 
         
 
