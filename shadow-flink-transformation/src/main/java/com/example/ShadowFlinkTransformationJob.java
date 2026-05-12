@@ -98,7 +98,7 @@ public class ShadowFlinkTransformationJob {
                         // 🔥 enrichment logic
                         enriched.highValue = tx.amount > 500;
                         enriched.normalizedCurrency =
-                                tx.currency.replace("Hello ", "ShadowTest");
+                                tx.currency.replace("Hello ", "ShadowTestFinal");
 
                         return mapper.writeValueAsString(enriched);
 
