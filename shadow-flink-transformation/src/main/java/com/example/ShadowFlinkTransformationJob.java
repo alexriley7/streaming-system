@@ -6,13 +6,15 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 
-//import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer.Semantic;
-
-
 import java.util.Properties;
 
-// --- Transaction POJO ---######
+
+// ============================================================
+// TRANSACTION POJO
+// ============================================================
+
 class Transaction {
+
     public String userId;
     public String transactionId;
     public double amount;
@@ -20,16 +22,25 @@ class Transaction {
     public long timestamp;
 }
 
-// --- Enriched Transaction ---
+
+// ============================================================
+// ENRICHED TRANSACTION
+// ============================================================
+
 class EnrichedTransaction extends Transaction {
+
     public boolean highValue;
     public String normalizedCurrency;
 }
 
+
+// ============================================================
+// MAIN JOB
+// ============================================================
+
 public class ShadowFlinkTransformationJob {
 
     public static void main(String[] args) throws Exception {
-
 
         final StreamExecutionEnvironment env =
                 StreamExecutionEnvironment.getExecutionEnvironment();
@@ -38,7 +49,10 @@ public class ShadowFlinkTransformationJob {
 
         ObjectMapper mapper = new ObjectMapper();
 
-        // ✅ Kafka config (IMPORTANT: cluster DNS, not localhost)
+        // ====================================================
+        // KAFKA CONFIG
+        // ====================================================
+
         String brokers = System.getenv().getOrDefault(
                 "KAFKA_BOOTSTRAP_SERVERS",
                 "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
@@ -49,35 +63,10 @@ public class ShadowFlinkTransformationJob {
                 "flink-consumer-v1"
         );
 
-        //Properties props = new Properties();
-        //props.setProperty("bootstrap.servers", brokers);
-        //props.setProperty("group.id", groupId);
-        //props.setProperty("auto.offset.reset", "earliest");
-
-        Properties consumerProps = new Properties();
-        consumerProps.setProperty("bootstrap.servers", brokers);
-        consumerProps.setProperty("group.id", groupId);
-        consumerProps.setProperty("auto.offset.reset", "earliest");
-
-        Properties producerProps = new Properties();
-        producerProps.setProperty("bootstrap.servers", brokers);
-
-
-   
-        
-        
-
-
-        // --- SOURCE ---####
-        FlinkKafkaConsumer<String> consumer =
-                new FlinkKafkaConsumer<>(
-                        "input-topic",
-                        new SimpleStringSchema(),
-                        consumerProps
-                );
-
+        // ====================================================
         // FEATURE FLAG
-        
+        // ====================================================
+
         boolean enabled = Boolean.parseBoolean(
                 System.getenv()
                         .getOrDefault(
@@ -86,53 +75,147 @@ public class ShadowFlinkTransformationJob {
                         )
         );
 
-        
+        System.out.println("=================================");
+        System.out.println("ENABLE_JOB = " + enabled);
+        System.out.println("=================================");
 
-        //consumer.setStartFromGroupOffsets();
+        // ====================================================
+        // CONSUMER PROPERTIES
+        // ====================================================
+
+        Properties consumerProps = new Properties();
+
+        consumerProps.setProperty(
+                "bootstrap.servers",
+                brokers
+        );
+
+        consumerProps.setProperty(
+                "group.id",
+                groupId
+        );
+
+        consumerProps.setProperty(
+                "auto.offset.reset",
+                "earliest"
+        );
+
+        // ====================================================
+        // PRODUCER PROPERTIES
+        // ====================================================
+
+        Properties producerProps = new Properties();
+
+        producerProps.setProperty(
+                "bootstrap.servers",
+                brokers
+        );
+
+        // ====================================================
+        // SOURCE
+        // ====================================================
+
+        FlinkKafkaConsumer<String> consumer =
+                new FlinkKafkaConsumer<>(
+                        "input-topic",
+                        new SimpleStringSchema(),
+                        consumerProps
+                );
 
         consumer.setStartFromEarliest();
 
-        // --- TRANSFORMATION ---
+        // ====================================================
+        // TRANSFORMATION
+        // ====================================================
+
         var stream = env
                 .addSource(consumer)
                 .map(value -> {
+
                     try {
-                        Transaction tx = mapper.readValue(value, Transaction.class);
 
-                        EnrichedTransaction enriched = new EnrichedTransaction();
+                        Transaction tx =
+                                mapper.readValue(
+                                        value,
+                                        Transaction.class
+                                );
 
-                        // copy fields
+                        EnrichedTransaction enriched =
+                                new EnrichedTransaction();
+
+                        // ------------------------------------
+                        // COPY FIELDS
+                        // ------------------------------------
+
                         enriched.userId = tx.userId;
                         enriched.transactionId = tx.transactionId;
                         enriched.amount = tx.amount;
                         enriched.currency = tx.currency;
                         enriched.timestamp = tx.timestamp;
 
-                        // 🔥 enrichment logic
-                        enriched.highValue = tx.amount > 500;
-                        enriched.normalizedCurrency =
-                                tx.currency.replace("Hello ", "ShadowTestFinal");
+                        // ------------------------------------
+                        // ENRICHMENT LOGIC
+                        // ------------------------------------
 
-                        return mapper.writeValueAsString(enriched);
+                        enriched.highValue =
+                                tx.amount > 500;
+
+                        enriched.normalizedCurrency =
+                                tx.currency.replace(
+                                        "Hello ",
+                                        "ShadowTestFinal"
+                                );
+
+                        return mapper.writeValueAsString(
+                                enriched
+                        );
 
                     } catch (Exception e) {
+
                         e.printStackTrace();
+
                         return null;
                     }
                 })
                 .filter(value -> value != null);
 
-        // --- SINK ---#########
-        FlinkKafkaProducer<String> producer =
-                new FlinkKafkaProducer<>(
-                        "shadow-output-topic",
-                        new SimpleStringSchema(),
-                        producerProps
-                        //Semantic.AT_LEAST_ONCE   // ✅ important
-                );
+        // ====================================================
+        // FEATURE FLAG CONTROL
+        // ====================================================
 
-        stream.addSink(producer);
+        if (enabled) {
 
-        env.execute("Flink Transaction Enrichment Job");
+            System.out.println(
+                    "Feature flag enabled. " +
+                    "Sinking to Kafka topic..."
+            );
+
+            // ================================================
+            // SINK
+            // ================================================
+
+            FlinkKafkaProducer<String> producer =
+                    new FlinkKafkaProducer<>(
+                            "shadow-output-topic",
+                            new SimpleStringSchema(),
+                            producerProps
+                    );
+
+            stream.addSink(producer);
+
+        } else {
+
+            System.out.println(
+                    "feature flag disabled"
+            );
+        }
+
+        // ====================================================
+        // EXECUTE JOB
+        // ====================================================
+
+        env.execute(
+                "Flink Transaction Enrichment Job"
+        );
     }
 }
