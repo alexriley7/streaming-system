@@ -79,7 +79,7 @@ public class FlinkTransformationJob {
 
         consumer.setStartFromEarliest();
 
-        // --- TRANSFORMATION ---
+        // --- TRANSFORMATION ---/
         var stream = env
                 .addSource(consumer)
                 .map(value -> {
