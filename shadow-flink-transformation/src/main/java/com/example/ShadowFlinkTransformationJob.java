@@ -64,6 +64,15 @@ public class ShadowFlinkTransformationJob {
         );
 
         // ====================================================
+        // OUTPUT TOPIC ENV VARIABLE
+        // ====================================================
+
+        String outputTopic = System.getenv().getOrDefault(
+                "OUTPUT_TOPIC",
+                "shadow-output-topic"
+        );
+
+        // ====================================================
         // FEATURE FLAG
         // ====================================================
 
@@ -77,6 +86,7 @@ public class ShadowFlinkTransformationJob {
 
         System.out.println("=================================");
         System.out.println("ENABLE_JOB = " + enabled);
+        System.out.println("OUTPUT_TOPIC = " + outputTopic);
         System.out.println("=================================");
 
         // ====================================================
@@ -187,7 +197,8 @@ public class ShadowFlinkTransformationJob {
 
             System.out.println(
                     "Feature flag enabled. " +
-                    "Sinking to Kafka topic..."
+                    "Sinking to Kafka topic: " +
+                    outputTopic
             );
 
             // ================================================
@@ -196,7 +207,7 @@ public class ShadowFlinkTransformationJob {
 
             FlinkKafkaProducer<String> producer =
                     new FlinkKafkaProducer<>(
-                            "shadow-output-topic",
+                            outputTopic,
                             new SimpleStringSchema(),
                             producerProps
                     );
