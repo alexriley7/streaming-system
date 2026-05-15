@@ -73,7 +73,7 @@ public class FlinkTransformationJob {
         );
 
         // ====================================================
-        // FEATURE FLAG
+        // FEATURE FLAG##
         // ====================================================
 
         boolean enabled = Boolean.parseBoolean(
