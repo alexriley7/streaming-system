@@ -107,7 +107,7 @@ public class FlinkTransformationJob {
 
         consumerProps.setProperty(
                 "auto.offset.reset",
-                "earliest"
+                "latest"
         );
 
         // ====================================================

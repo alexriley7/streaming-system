@@ -107,7 +107,7 @@ public class ShadowFlinkTransformationJob {
 
         consumerProps.setProperty(
                 "auto.offset.reset",
-                "earliest"
+                "latest"
         );
 
         // ====================================================
