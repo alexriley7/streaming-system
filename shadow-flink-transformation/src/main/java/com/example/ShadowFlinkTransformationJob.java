@@ -50,7 +50,7 @@ public class ShadowFlinkTransformationJob {
         ObjectMapper mapper = new ObjectMapper();
 
         // ====================================================
-        // KAFKA CONFIG##
+        // KAFKA CONFIG###
         // ====================================================
 
         String brokers = System.getenv().getOrDefault(
