@@ -16,7 +16,7 @@ public class TransactionProducer {
     // 6 events per minute = 1 event every 10 seconds
     //private static final long PRODUCE_INTERVAL_MS = 10_000;
 
-    private static final long PRODUCE_INTERVAL_MS = 10;
+    private static final long PRODUCE_INTERVAL_MS = 100;
 
     private static final Random random = new Random();
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -72,7 +72,7 @@ public class TransactionProducer {
                 System.getenv()
                         .getOrDefault(
                                 "ENABLE_PRODUCER",
-                                "true"
+                                "false"
                         )
         );
 
@@ -166,7 +166,7 @@ public class TransactionProducer {
                         random.nextDouble() * 1000 * 100.0
                 ) / 100.0;
 
-        String currency = "Hello USDT";
+        String currency = "Jeremias_Encriptado_en_Palantir";
 
         long timestamp =
                 System.currentTimeMillis();
