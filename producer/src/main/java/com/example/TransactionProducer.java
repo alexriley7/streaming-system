@@ -166,7 +166,7 @@ public class TransactionProducer {
                         random.nextDouble() * 1000 * 100.0
                 ) / 100.0;
 
-        String currency = "Jeremias_Encriptado_en_Palantir";
+        String currency = "USDT";
 
         long timestamp =
                 System.currentTimeMillis();
