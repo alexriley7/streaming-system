@@ -111,7 +111,7 @@ public class FlinkTransformationJob {
         );
 
         // ====================================================
-        // PRODUCER PROPERTIES
+        // PRODUCER PROPERTIES#
         // ====================================================
 
         Properties producerProps = new Properties();
