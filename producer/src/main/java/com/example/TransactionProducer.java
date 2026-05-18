@@ -137,7 +137,7 @@ public class TransactionProducer {
                 });
 
                 // -------------------------------------------------
-                // 6 EVENTS / MINUTE
+                // 6 EVENTS / MINUTE##
                 // -------------------------------------------------
 
                 Thread.sleep(PRODUCE_INTERVAL_MS);
