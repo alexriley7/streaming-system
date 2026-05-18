@@ -141,7 +141,7 @@ public class FlinkTransformationJob {
 
         // ====================================================
         // IMPORTANT:
-        // START ONLY FROM NEW MESSAGES
+        // START ONLY FROM NEW MESSAGES ##
         // ====================================================
 
         consumer.setStartFromLatest();
