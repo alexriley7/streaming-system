@@ -73,7 +73,7 @@ public class FlinkTransformationJob {
         );
 
         // ====================================================
-        // FEATURE FLAG##
+        // FEATURE FLAG
         // ====================================================
 
         boolean enabled = Boolean.parseBoolean(
@@ -87,6 +87,8 @@ public class FlinkTransformationJob {
         System.out.println("=================================");
         System.out.println("ENABLE_JOB = " + enabled);
         System.out.println("OUTPUT_TOPIC = " + outputTopic);
+        System.out.println("GROUP_ID = " + groupId);
+        System.out.println("BOOTSTRAP_SERVERS = " + brokers);
         System.out.println("=================================");
 
         // ====================================================
@@ -110,8 +112,13 @@ public class FlinkTransformationJob {
                 "latest"
         );
 
+        consumerProps.setProperty(
+                "enable.auto.commit",
+                "true"
+        );
+
         // ====================================================
-        // PRODUCER PROPERTIES#
+        // PRODUCER PROPERTIES
         // ====================================================
 
         Properties producerProps = new Properties();
@@ -132,7 +139,12 @@ public class FlinkTransformationJob {
                         consumerProps
                 );
 
-        consumer.setStartFromEarliest();
+        // ====================================================
+        // IMPORTANT:
+        // START ONLY FROM NEW MESSAGES
+        // ====================================================
+
+        consumer.setStartFromLatest();
 
         // ====================================================
         // TRANSFORMATION
@@ -217,7 +229,7 @@ public class FlinkTransformationJob {
         } else {
 
             System.out.println(
-                    "feature flag disabled"
+                    "Feature flag disabled"
             );
         }
 
