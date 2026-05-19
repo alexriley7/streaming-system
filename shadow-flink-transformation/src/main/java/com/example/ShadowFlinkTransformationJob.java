@@ -131,6 +131,11 @@ public class ShadowFlinkTransformationJob {
                 "latest"
         );
 
+        consumerProps.setProperty(
+                "enable.auto.commit",
+                "true"
+        );
+
         // ====================================================
         // PRODUCER PROPERTIES
         // ====================================================
@@ -157,6 +162,8 @@ public class ShadowFlinkTransformationJob {
         // IGNORE OLD HISTORICAL MESSAGES
 
         consumer.setStartFromLatest();
+
+        
 
         // ====================================================
         // TRANSFORMATION
