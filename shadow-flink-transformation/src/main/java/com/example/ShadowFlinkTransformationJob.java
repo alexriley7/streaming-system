@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 
 import org.apache.flink.connector.file.sink.FileSink;
-import org.apache.flink.connector.file.sink.writer.DefaultRollingPolicy;
+// import org.apache.flink.connector.file.sink.writer.DefaultRollingPolicy;
+import org.apache.flink.streaming.api.functions.sink.filesystem.rollingpolicies.DefaultRollingPolicy;
+import org.apache.flink.api.common.serialization.SimpleStringEncoder;
 
 import org.apache.flink.core.fs.Path;
 
@@ -15,6 +17,7 @@ import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 
 import org.apache.flink.streaming.api.functions.sink.filesystem.rollingpolicies.OnCheckpointRollingPolicy;
+
 
 import java.time.Duration;
 import java.util.Properties;
