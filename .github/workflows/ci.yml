@@ -9,6 +9,8 @@ env:
   IMAGE_CONSUMER: ghcr.io/${{ github.repository }}/consumer
   IMAGE_FLINK: ghcr.io/${{ github.repository }}/flink-transformation
   IMAGE_FLINK_SHADOW: ghcr.io/${{ github.repository }}/shadow-flink-transformation
+  DOCKER_CLIENT_TIMEOUT: 300
+  COMPOSE_HTTP_TIMEOUT: 300
 
 jobs:
   build:
