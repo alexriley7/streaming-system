@@ -5,3 +5,5 @@ COPY target/shadow-flink-transformation-*.jar /opt/flink/usrlib/job.jar
 
 # Optional: better logging
 ENV FLINK_PROPERTIES="jobmanager.rpc.address: localhost"
+
+RUN cp /opt/flink/opt/flink-s3-fs-hadoop-*.jar /opt/flink/lib/
