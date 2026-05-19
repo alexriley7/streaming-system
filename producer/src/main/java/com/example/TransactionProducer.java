@@ -16,7 +16,7 @@ public class TransactionProducer {
     // 6 events per minute = 1 event every 10 seconds
     //private static final long PRODUCE_INTERVAL_MS = 10_000;
 
-    private static final long PRODUCE_INTERVAL_MS = 10_000;
+    private static final long PRODUCE_INTERVAL_MS = 20_000;
 
     private static final Random random = new Random();
     private static final ObjectMapper mapper = new ObjectMapper();
