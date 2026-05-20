@@ -3,21 +3,20 @@ package com.example;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
+
+import org.apache.flink.connector.file.sink.FileSink;
+import org.apache.flink.streaming.api.functions.sink.filesystem.rollingpolicies.DefaultRollingPolicy;
+import org.apache.flink.api.common.serialization.SimpleStringEncoder;
+
+import org.apache.flink.core.fs.Path;
+
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-
-import java.net.URI;
-import java.time.Instant;
+import java.time.Duration;
 import java.util.Properties;
-import java.util.UUID;
 
 
 // ============================================================
@@ -105,6 +104,12 @@ public class ShadowFlinkTransformationJob {
         System.out.println("=================================");
 
         // ====================================================
+        // ENABLE CHECKPOINTING
+        // ====================================================
+
+        env.enableCheckpointing(30000);
+
+        // ====================================================
         // CONSUMER PROPERTIES
         // ====================================================
 
@@ -151,6 +156,9 @@ public class ShadowFlinkTransformationJob {
                         new SimpleStringSchema(),
                         consumerProps
                 );
+
+        // IMPORTANT:
+        // IGNORE OLD HISTORICAL MESSAGES
 
         consumer.setStartFromLatest();
 
@@ -242,64 +250,39 @@ public class ShadowFlinkTransformationJob {
         }
 
         // ====================================================
-        // MOTO S3 DIRECT SINK
+        // MOTO S3 JSON FILE SINK
         // ====================================================
 
-        stream.addSink(value -> {
+        String s3Path =
+                "s3://shadow-flink-job/events/";
 
-            try {
-
-                S3Client s3 =
-                        S3Client.builder()
-                                .endpointOverride(
-                                        URI.create(
-                                                "http://moto-s3.default.svc.cluster.local:5000"
+        FileSink<String> s3Sink =
+                FileSink
+                        .forRowFormat(
+                                new Path(s3Path),
+                                new SimpleStringEncoder<String>("UTF-8")
+                        )
+                        .withRollingPolicy(
+                                DefaultRollingPolicy.builder()
+                                        .withRolloverInterval(
+                                                Duration.ofMinutes(1)
+                                                        .toMillis()
                                         )
-                                )
-                                .region(Region.US_EAST_1)
-                                .forcePathStyle(true)
-                                .credentialsProvider(
-                                        StaticCredentialsProvider.create(
-                                                AwsBasicCredentials.create(
-                                                        "test",
-                                                        "test"
-                                                )
+                                        .withInactivityInterval(
+                                                Duration.ofSeconds(30)
+                                                        .toMillis()
                                         )
-                                )
-                                .build();
+                                        .withMaxPartSize(
+                                                1024 * 1024 * 10
+                                        )
+                                        .build()
+                        )
+                        .build();
 
-                String key =
-                        "events/"
-                        + Instant.now().toString()
-                        + "-"
-                        + UUID.randomUUID()
-                        + ".json";
-
-                s3.putObject(
-                        PutObjectRequest.builder()
-                                .bucket("shadow-flink-job")
-                                .key(key)
-                                .contentType("application/json")
-                                .build(),
-                        RequestBody.fromString(value)
-                );
-
-                System.out.println(
-                        "Uploaded event to Moto S3 -> " + key
-                );
-
-            } catch (Exception e) {
-
-                System.out.println(
-                        "Failed to upload event to Moto S3"
-                );
-
-                e.printStackTrace();
-            }
-        });
+        stream.sinkTo(s3Sink);
 
         System.out.println(
-                "Moto S3 direct sink enabled"
+                "S3 sink enabled -> " + s3Path
         );
 
         // ====================================================
