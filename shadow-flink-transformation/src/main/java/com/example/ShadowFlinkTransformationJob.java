@@ -3,19 +3,31 @@ package com.example;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
+
+import org.apache.flink.configuration.Configuration;
+
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+
+import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
+
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+
 import software.amazon.awssdk.core.sync.RequestBody;
+
 import software.amazon.awssdk.regions.Region;
+
 import software.amazon.awssdk.services.s3.S3Client;
+
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.net.URI;
+
 import java.time.Instant;
+
 import java.util.Properties;
 import java.util.UUID;
 
@@ -30,8 +42,11 @@ class Transaction {
 
     public String userId;
     public String transactionId;
+
     public double amount;
+
     public String currency;
+
     public long timestamp;
 }
 
@@ -43,6 +58,7 @@ class Transaction {
 class EnrichedTransaction extends Transaction {
 
     public boolean highValue;
+
     public String normalizedCurrency;
 }
 
@@ -152,6 +168,9 @@ public class ShadowFlinkTransformationJob {
                         consumerProps
                 );
 
+        // IMPORTANT:
+        // IGNORE OLD HISTORICAL MESSAGES
+
         consumer.setStartFromLatest();
 
         // ====================================================
@@ -180,9 +199,14 @@ public class ShadowFlinkTransformationJob {
                         enriched.eventId = tx.eventId;
 
                         enriched.userId = tx.userId;
-                        enriched.transactionId = tx.transactionId;
+
+                        enriched.transactionId =
+                                tx.transactionId;
+
                         enriched.amount = tx.amount;
+
                         enriched.currency = tx.currency;
+
                         enriched.timestamp = tx.timestamp;
 
                         // ------------------------------------
@@ -245,58 +269,89 @@ public class ShadowFlinkTransformationJob {
         // MOTO S3 DIRECT SINK
         // ====================================================
 
-        stream.addSink(value -> {
+        stream.addSink(
 
-            try {
+                new RichSinkFunction<String>() {
 
-                S3Client s3 =
-                        S3Client.builder()
-                                .endpointOverride(
-                                        URI.create(
-                                                "http://moto-s3.default.svc.cluster.local:5000"
-                                        )
-                                )
-                                .region(Region.US_EAST_1)
-                                .forcePathStyle(true)
-                                .credentialsProvider(
-                                        StaticCredentialsProvider.create(
-                                                AwsBasicCredentials.create(
-                                                        "test",
-                                                        "test"
+                    private transient S3Client s3;
+
+                    @Override
+                    public void open(
+                            Configuration parameters
+                    ) {
+
+                        s3 =
+                                S3Client.builder()
+                                        .endpointOverride(
+                                                URI.create(
+                                                        "http://moto-s3.default.svc.cluster.local:5000"
                                                 )
                                         )
-                                )
-                                .build();
+                                        .region(
+                                                Region.US_EAST_1
+                                        )
+                                        .forcePathStyle(true)
+                                        .credentialsProvider(
+                                                StaticCredentialsProvider.create(
+                                                        AwsBasicCredentials.create(
+                                                                "test",
+                                                                "test"
+                                                        )
+                                                )
+                                        )
+                                        .build();
 
-                String key =
-                        "events/"
-                        + Instant.now().toString()
-                        + "-"
-                        + UUID.randomUUID()
-                        + ".json";
+                        System.out.println(
+                                "Moto S3 client initialized"
+                        );
+                    }
 
-                s3.putObject(
-                        PutObjectRequest.builder()
-                                .bucket("shadow-flink-job")
-                                .key(key)
-                                .contentType("application/json")
-                                .build(),
-                        RequestBody.fromString(value)
-                );
+                    @Override
+                    public void invoke(
+                            String value,
+                            Context context
+                    ) {
 
-                System.out.println(
-                        "Uploaded event to Moto S3 -> " + key
-                );
+                        try {
 
-            } catch (Exception e) {
+                            String key =
+                                    "events/"
+                                    + Instant.now().toString()
+                                    + "-"
+                                    + UUID.randomUUID()
+                                    + ".json";
 
-                System.out.println(
-                        "Failed to upload event to Moto S3"
-                );
+                            s3.putObject(
+                                    PutObjectRequest.builder()
+                                            .bucket(
+                                                    "shadow-flink-job"
+                                            )
+                                            .key(key)
+                                            .contentType(
+                                                    "application/json"
+                                            )
+                                            .build(),
+                                    RequestBody.fromString(
+                                            value
+                                    )
+                            );
 
-                e.printStackTrace();
-            }
-        });
+                            System.out.println(
+                                    "Uploaded event to Moto S3 -> "
+                                    + key
+                            );
+
+                        } catch (Exception e) {
+
+                            System.out.println(
+                                    "Failed to upload event to Moto S3"
+                            );
+
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        );
 
         System.out.println(
                 "Moto S3 direct sink enabled"

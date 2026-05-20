@@ -1,3 +1,4 @@
 com/example/Transaction.class
 com/example/ShadowFlinkTransformationJob.class
+com/example/ShadowFlinkTransformationJob$1.class
 com/example/EnrichedTransaction.class
