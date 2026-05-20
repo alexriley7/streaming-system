@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 
 import org.apache.flink.connector.file.sink.FileSink;
-// import org.apache.flink.connector.file.sink.writer.DefaultRollingPolicy;
 import org.apache.flink.streaming.api.functions.sink.filesystem.rollingpolicies.DefaultRollingPolicy;
 import org.apache.flink.api.common.serialization.SimpleStringEncoder;
 
@@ -16,9 +15,6 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 
-import org.apache.flink.streaming.api.functions.sink.filesystem.rollingpolicies.OnCheckpointRollingPolicy;
-
-
 import java.time.Duration;
 import java.util.Properties;
 
@@ -28,6 +24,8 @@ import java.util.Properties;
 // ============================================================
 
 class Transaction {
+
+    public String eventId;
 
     public String userId;
     public String transactionId;
@@ -102,6 +100,7 @@ public class ShadowFlinkTransformationJob {
         System.out.println("ENABLE_JOB = " + enabled);
         System.out.println("OUTPUT_TOPIC = " + outputTopic);
         System.out.println("GROUP_ID = " + groupId);
+        System.out.println("BOOTSTRAP_SERVERS = " + brokers);
         System.out.println("=================================");
 
         // ====================================================
@@ -163,8 +162,6 @@ public class ShadowFlinkTransformationJob {
 
         consumer.setStartFromLatest();
 
-        
-
         // ====================================================
         // TRANSFORMATION
         // ====================================================
@@ -187,6 +184,8 @@ public class ShadowFlinkTransformationJob {
                         // ------------------------------------
                         // COPY FIELDS
                         // ------------------------------------
+
+                        enriched.eventId = tx.eventId;
 
                         enriched.userId = tx.userId;
                         enriched.transactionId = tx.transactionId;
@@ -253,13 +252,6 @@ public class ShadowFlinkTransformationJob {
         // ====================================================
         // MOTO S3 JSON FILE SINK
         // ====================================================
-
-        // IMPORTANT:
-        // Requires Flink S3 filesystem plugin in image:
-        //
-        // flink-s3-fs-hadoop OR flink-s3-fs-presto
-        //
-        // and Hadoop AWS dependencies.
 
         String s3Path =
                 "s3://shadow-flink-job/events/";

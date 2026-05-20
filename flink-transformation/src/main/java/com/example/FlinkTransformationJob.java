@@ -15,6 +15,8 @@ import java.util.Properties;
 
 class Transaction {
 
+    public String eventId;
+
     public String userId;
     public String transactionId;
     public double amount;
@@ -141,7 +143,7 @@ public class FlinkTransformationJob {
 
         // ====================================================
         // IMPORTANT:
-        // START ONLY FROM NEW MESSAGES ##
+        // START ONLY FROM NEW MESSAGES
         // ====================================================
 
         consumer.setStartFromLatest();
@@ -168,6 +170,8 @@ public class FlinkTransformationJob {
                         // ------------------------------------
                         // COPY FIELDS
                         // ------------------------------------
+
+                        enriched.eventId = tx.eventId;
 
                         enriched.userId = tx.userId;
                         enriched.transactionId = tx.transactionId;

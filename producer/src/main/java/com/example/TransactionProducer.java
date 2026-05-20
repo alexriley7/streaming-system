@@ -8,18 +8,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Properties;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TransactionProducer {
 
     private static final String TOPIC = "input-topic";
 
-    // 6 events per minute = 1 event every 10 seconds
-    //private static final long PRODUCE_INTERVAL_MS = 10_000;
-
-    private static final long PRODUCE_INTERVAL_MS = 30_000;
+    // 1 event every 60 seconds
+    private static final long PRODUCE_INTERVAL_MS = 60_000;
 
     private static final Random random = new Random();
-    private static final ObjectMapper mapper = new ObjectMapper();
+
+    private static final ObjectMapper mapper =
+            new ObjectMapper();
+
+    // ========================================================
+    // EVENT ID COUNTER
+    // ========================================================
+
+    private static final AtomicInteger EVENT_COUNTER =
+            new AtomicInteger(1);
 
     public static void main(String[] args) {
 
@@ -79,7 +87,7 @@ public class TransactionProducer {
         System.out.println("==================================");
         System.out.println("Starting transaction producer...");
         System.out.println("ENABLE_PRODUCER = " + enabled);
-        System.out.println("Rate = 6 transactions per minute");
+        System.out.println("Rate = 1 transaction per minute");
         System.out.println("==================================");
 
         try {
@@ -93,8 +101,8 @@ public class TransactionProducer {
                 }
             }
 
-            // -------------------------------------------------#
-            // PRODUCER LOOP ##
+            // -------------------------------------------------
+            // PRODUCER LOOP
             // -------------------------------------------------
 
             while (true) {
@@ -126,7 +134,9 @@ public class TransactionProducer {
                     } else {
 
                         System.out.println(
-                                "Produced transaction: " +
+                                "Produced eventId=" +
+                                tx.eventId +
+                                " | transactionId=" +
                                 tx.transactionId +
                                 " | partition=" +
                                 metadata.partition() +
@@ -135,10 +145,6 @@ public class TransactionProducer {
                         );
                     }
                 });
-
-                // -------------------------------------------------
-                // 6 EVENTS / MINUTE##
-                // -------------------------------------------------
 
                 Thread.sleep(PRODUCE_INTERVAL_MS);
             }
@@ -154,6 +160,34 @@ public class TransactionProducer {
     }
 
     private static Transaction generateTransaction() {
+
+        // ====================================================
+        // EVENT ID GENERATION
+        // ====================================================
+
+        int currentId =
+                EVENT_COUNTER.getAndIncrement();
+
+        // Reset after 10,000,000
+
+        if (currentId > 10_000_000) {
+
+            EVENT_COUNTER.set(1);
+
+            currentId =
+                    EVENT_COUNTER.getAndIncrement();
+        }
+
+        // Format:
+        // 00000001
+        // 00000002
+
+        String eventId =
+                String.format("%08d", currentId);
+
+        // ====================================================
+        // NORMAL FIELDS
+        // ====================================================
 
         String userId =
                 "user-" + random.nextInt(100);
@@ -171,12 +205,22 @@ public class TransactionProducer {
         long timestamp =
                 System.currentTimeMillis();
 
-        return new Transaction(
+        // ====================================================
+        // CREATE TRANSACTION
+        // ====================================================
+
+        Transaction tx = new Transaction(
                 userId,
                 txId,
                 amount,
                 currency,
                 timestamp
         );
+
+        // ADD EVENT ID
+
+        tx.eventId = eventId;
+
+        return tx;
     }
 }
