@@ -94,7 +94,7 @@ public class FlinkTransformationJob {
         System.out.println("=================================");
 
         // ====================================================
-        // CONSUMER PROPERTIES#
+        // CONSUMER PROPERTIES##
         // ====================================================
 
         Properties consumerProps = new Properties();
