@@ -266,7 +266,7 @@ public class ShadowFlinkTransformationJob {
         }
 
         // ====================================================
-        // MOTO S3 DIRECT SINK
+        // MOTO S3 DIRECT SINK #
         // ====================================================
 
         stream.addSink(
