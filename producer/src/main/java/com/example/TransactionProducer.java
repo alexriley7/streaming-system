@@ -26,8 +26,17 @@ public class TransactionProducer {
     // EVENT ID COUNTER
     // ========================================================
 
+    // Generates:
+    // 00000001
+    // 00000002
+    // ...
+    // 99999999
+
     private static final AtomicInteger EVENT_COUNTER =
             new AtomicInteger(1);
+
+    private static final int MAX_EVENT_ID =
+            99_999_999;
 
     public static void main(String[] args) {
 
@@ -39,13 +48,15 @@ public class TransactionProducer {
                         "localhost:9092"
                 );
 
-        // Kafka bootstrap server
+        // ====================================================
+        // KAFKA CONFIG
+        // ====================================================
+
         props.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 broker
         );
 
-        // serializers
         props.put(
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                 StringSerializer.class.getName()
@@ -75,7 +86,10 @@ public class TransactionProducer {
         KafkaProducer<String, String> producer =
                 new KafkaProducer<>(props);
 
-        // feature flag
+        // ====================================================
+        // FEATURE FLAG
+        // ====================================================
+
         boolean enabled = Boolean.parseBoolean(
                 System.getenv()
                         .getOrDefault(
@@ -88,13 +102,20 @@ public class TransactionProducer {
         System.out.println("Starting transaction producer...");
         System.out.println("ENABLE_PRODUCER = " + enabled);
         System.out.println("Rate = 1 transaction per minute");
+        System.out.println("EventID range: 00000001 -> 99999999");
         System.out.println("==================================");
 
         try {
 
+            // -------------------------------------------------
+            // DISABLED MODE
+            // -------------------------------------------------
+
             if (!enabled) {
 
-                System.out.println("Producer DISABLED. Idling...");
+                System.out.println(
+                        "Producer DISABLED. Idling..."
+                );
 
                 while (true) {
                     Thread.sleep(60_000);
@@ -102,12 +123,13 @@ public class TransactionProducer {
             }
 
             // -------------------------------------------------
-            // PRODUCER LOOP##
+            // PRODUCER LOOP
             // -------------------------------------------------
 
             while (true) {
 
-                Transaction tx = generateTransaction();
+                Transaction tx =
+                        generateTransaction();
 
                 String key = tx.userId;
 
@@ -121,30 +143,33 @@ public class TransactionProducer {
                                 value
                         );
 
-                producer.send(record, (metadata, exception) -> {
+                producer.send(
+                        record,
+                        (metadata, exception) -> {
 
-                    if (exception != null) {
+                            if (exception != null) {
 
-                        System.err.println(
-                                "Failed to send message"
-                        );
+                                System.err.println(
+                                        "Failed to send message"
+                                );
 
-                        exception.printStackTrace();
+                                exception.printStackTrace();
 
-                    } else {
+                            } else {
 
-                        System.out.println(
-                                "Produced eventId=" +
-                                tx.eventId +
-                                " | transactionId=" +
-                                tx.transactionId +
-                                " | partition=" +
-                                metadata.partition() +
-                                " | offset=" +
-                                metadata.offset()
-                        );
-                    }
-                });
+                                System.out.println(
+                                        "Produced eventId=" +
+                                        tx.eventId +
+                                        " | transactionId=" +
+                                        tx.transactionId +
+                                        " | partition=" +
+                                        metadata.partition() +
+                                        " | offset=" +
+                                        metadata.offset()
+                                );
+                            }
+                        }
+                );
 
                 Thread.sleep(PRODUCE_INTERVAL_MS);
             }
@@ -168,25 +193,26 @@ public class TransactionProducer {
         int currentId =
                 EVENT_COUNTER.getAndIncrement();
 
-        // Reset after 10,000,000
+        // STOP after 99999999
 
-        if (currentId > 10_000_000) {
+        if (currentId > MAX_EVENT_ID) {
 
-            EVENT_COUNTER.set(1);
-
-            currentId =
-                    EVENT_COUNTER.getAndIncrement();
+            throw new RuntimeException(
+                    "Event ID range exhausted. " +
+                    "Maximum EventID 99999999 reached."
+            );
         }
 
         // Format:
         // 00000001
         // 00000002
+        // ...
 
         String eventId =
                 String.format("%08d", currentId);
 
         // ====================================================
-        // NORMAL FIELDS
+        // RANDOM TRANSACTION DATA
         // ====================================================
 
         String userId =
