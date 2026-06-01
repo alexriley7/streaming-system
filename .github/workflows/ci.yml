@@ -6,6 +6,7 @@ on:
 
 env:
   IMAGE_PRODUCER: ghcr.io/${{ github.repository }}/producer
+  IMAGE_PROFILE_PRODUCER: ghcr.io/${{ github.repository }}/profile-producer
   IMAGE_CONSUMER: ghcr.io/${{ github.repository }}/consumer
   IMAGE_FLINK: ghcr.io/${{ github.repository }}/flink-transformation
   IMAGE_FLINK_SHADOW: ghcr.io/${{ github.repository }}/shadow-flink-transformation
