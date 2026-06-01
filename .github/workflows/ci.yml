@@ -36,6 +36,9 @@ jobs:
       - name: Build Producer
         run: mvn clean package -pl producer -am -DskipTests
 
+      - name: Build Profile-Producer
+        run: mvn clean package -pl profile-producer -am -DskipTests
+
       - name: Build Consumer
         run: mvn clean package -pl consumer -am -DskipTests
 
@@ -54,6 +57,12 @@ jobs:
         run: |
           docker build -t $IMAGE_PRODUCER:${{ github.sha }} ./producer
           docker push $IMAGE_PRODUCER:${{ github.sha }}
+
+        # 5. Build & Push Profile Producer
+      - name: Build & Push Profile-Producer
+        run: |
+          docker build -t $IMAGE_PROFILE_PRODUCER:${{ github.sha }} ./profile-producer
+          docker push $IMAGE_PROFILE_PRODUCER:${{ github.sha }}
 
       # 6. Build & Push Consumer
       - name: Build & Push Consumer
@@ -84,6 +93,7 @@ jobs:
           cd streaming-system-deploy
 
           sed -i "s|image:.*producer.*|image: $IMAGE_PRODUCER:${{ github.sha }}|" producer/producer-deployment.yaml
+          sed -i "s|image:.*profile-producer.*|image: $IMAGE_PROFILE_PRODUCER:${{ github.sha }}|" profile-producer/profile-producer-deployment.yaml
           sed -i "s|image:.*consumer.*|image: $IMAGE_CONSUMER:${{ github.sha }}|" consumer/consumer-deployment.yaml
           sed -i "s|image:.*flink-transformation.*|image: $IMAGE_FLINK:${{ github.sha }}|" flink-transformation/flink-transformation-deployment.yaml
           sed -i "s|image:.*shadow-flink-transformation.*|image: $IMAGE_FLINK_SHADOW:${{ github.sha }}|" shadow-flink-transformation/shadow-flink-transformation-deployment.yaml

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="1" failures="0" name="com.example.AppTest" time="0.002" errors="0" skipped="0">
+<testsuite tests="1" failures="0" name="com.example.AppTest" time="0.001" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
-    <property name="java.vm.version" value="21.0.10+7-Ubuntu-122.04"/>
+    <property name="java.vm.version" value="21.0.11+10-1-22.04.2-Ubuntu"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-21-openjdk-amd64/lib"/>
     <property name="maven.multiModuleProjectDirectory" value="/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system"/>
     <property name="java.vm.vendor" value="Ubuntu"/>
@@ -15,7 +15,7 @@
     <property name="user.dir" value="/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="java.runtime.version" value="21.0.10+7-Ubuntu-122.04"/>
+    <property name="java.runtime.version" value="21.0.11+10-1-22.04.2-Ubuntu"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.io.tmpdir" value="/tmp"/>
     <property name="line.separator" value="
@@ -47,15 +47,15 @@
     <property name="user.language" value="en"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="java.vm.info" value="mixed mode, sharing"/>
-    <property name="java.version" value="21.0.10"/>
+    <property name="java.version" value="21.0.11"/>
     <property name="native.encoding" value="UTF-8"/>
     <property name="java.vendor" value="Ubuntu"/>
     <property name="maven.home" value="/usr/share/maven"/>
     <property name="file.separator" value="/"/>
-    <property name="java.version.date" value="2026-01-20"/>
+    <property name="java.version.date" value="2026-04-21"/>
     <property name="java.vendor.url.bug" value="https://bugs.launchpad.net/ubuntu/+source/openjdk-21"/>
     <property name="sun.cpu.endian" value="little"/>
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
   </properties>
-  <testcase classname="com.example.AppTest" name="testApp" time="0.002"/>
+  <testcase classname="com.example.AppTest" name="testApp" time="0.001"/>
 </testsuite>

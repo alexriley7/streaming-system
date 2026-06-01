@@ -9,6 +9,7 @@
 
   <modules>
     <module>producer</module>
+    <module>profile-producer</module>
     <module>consumer</module>
     <module>flink-transformation</module>
     <module>shadow-flink-transformation</module>
