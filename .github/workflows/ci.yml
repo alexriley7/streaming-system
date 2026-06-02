@@ -86,7 +86,7 @@ jobs:
       # 8. Clone deploy repo
       - name: Clone deploy repo
         run: |
-          git clone https://${{ secrets.GH_PAT }}@github.com/alexriley7/streaming-system-deploy.git
+          git clone https://${{ secrets.GH_PATT }}@github.com/alexriley7/streaming-system-deploy.git
 
       # 9. Update image tags
       - name: Update deployment files
