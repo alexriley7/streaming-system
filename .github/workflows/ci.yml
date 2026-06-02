@@ -38,7 +38,7 @@ jobs:
         run: mvn clean package -pl producer -am -DskipTests
 
       - name: Build Profile-Producer
-        run: mvn clean package -pl profile-producer -am -DskipTests
+        run: mvn clean package -pl producer-profile -am -DskipTests
 
       - name: Build Consumer
         run: mvn clean package -pl consumer -am -DskipTests
