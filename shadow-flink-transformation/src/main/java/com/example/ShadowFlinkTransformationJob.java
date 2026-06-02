@@ -64,7 +64,7 @@ class EnrichedTransaction extends Transaction {
 
 
 // ============================================================
-// MAIN JOB
+// MAIN JOB #LastUpdated
 // ============================================================
 
 public class ShadowFlinkTransformationJob {
