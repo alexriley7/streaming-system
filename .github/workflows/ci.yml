@@ -22,7 +22,7 @@ jobs:
       packages: write
 
     steps:
-      # 1. Checkout repo
+      ## 1. Checkout repo
       - name: Checkout
         uses: actions/checkout@v4
 
