@@ -71,7 +71,7 @@ public class ProfileProducer {
         ObjectMapper mapper = new ObjectMapper();
         Random random = new Random();
 
-        // Generate profiles for user-1 through user-100
+        // Generate $$profiles for user-1 through user-100
         while (true) {
 
             String userId =
