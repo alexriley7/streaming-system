@@ -31,6 +31,13 @@ import java.time.Instant;
 import java.util.Properties;
 import java.util.UUID;
 
+// add profile state management
+
+import org.apache.flink.api.common.state.ValueState;
+import org.apache.flink.api.common.state.ValueStateDescriptor;
+import org.apache.flink.streaming.api.functions.co.KeyedCoProcessFunction;
+import org.apache.flink.util.Collector;
+
 
 // ============================================================
 // TRANSACTION POJO
@@ -55,11 +62,106 @@ class Transaction {
 // ENRICHED TRANSACTION
 // ============================================================
 
-class EnrichedTransaction extends Transaction {
+/*class EnrichedTransaction extends Transaction {
 
     public boolean highValue;
 
     public String normalizedCurrency;
+}
+*/
+
+class EnrichedTransaction extends Transaction {
+
+    public String profileId;
+
+    public String name;
+
+    public String country;
+}
+
+// add enrichment functions
+
+class Profile {
+
+    public String profileId;
+
+    public String userId;
+
+    public String name;
+
+    public String country;
+}
+
+class ProfileEnrichmentFunction
+        extends KeyedCoProcessFunction<
+                String,
+                Transaction,
+                Profile,
+                EnrichedTransaction> {
+
+    private transient ValueState<Profile> profileState;
+
+    @Override
+    public void open(Configuration parameters) {
+
+        ValueStateDescriptor<Profile> descriptor =
+                new ValueStateDescriptor<>(
+                        "profile-state",
+                        Profile.class
+                );
+
+        profileState =
+                getRuntimeContext().getState(descriptor);
+    }
+
+    @Override
+    public void processElement1(
+            Transaction tx,
+            Context ctx,
+            Collector<EnrichedTransaction> out)
+            throws Exception {
+
+        Profile profile = profileState.value();
+
+        EnrichedTransaction enriched =
+                new EnrichedTransaction();
+
+        enriched.eventId = tx.eventId;
+        enriched.userId = tx.userId;
+        enriched.transactionId = tx.transactionId;
+        enriched.amount = tx.amount;
+        enriched.currency = tx.currency;
+        enriched.timestamp = tx.timestamp;
+
+        if (profile != null) {
+
+            enriched.profileId =
+                    profile.profileId;
+
+            enriched.name =
+                    profile.name;
+
+            enriched.country =
+                    profile.country;
+        }
+
+        out.collect(enriched);
+    }
+
+    @Override
+    public void processElement2(
+            Profile profile,
+            Context ctx,
+            Collector<EnrichedTransaction> out)
+            throws Exception {
+
+        profileState.update(profile);
+
+        System.out.println(
+                "Updated profile for "
+                        + profile.userId
+        );
+    }
 }
 
 
@@ -75,6 +177,8 @@ public class ShadowFlinkTransformationJob {
                 StreamExecutionEnvironment.getExecutionEnvironment();
 
         env.setParallelism(3);
+
+        env.enableCheckpointing(30000); // added
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -160,6 +264,7 @@ public class ShadowFlinkTransformationJob {
         // ====================================================
         // SOURCE
         // ====================================================
+        /*
 
         FlinkKafkaConsumer<String> consumer =
                 new FlinkKafkaConsumer<>(
@@ -167,6 +272,29 @@ public class ShadowFlinkTransformationJob {
                         new SimpleStringSchema(),
                         consumerProps
                 );
+
+        */
+
+
+        FlinkKafkaConsumer<String> transactionConsumer =
+        new FlinkKafkaConsumer<>(
+                "input-topic",
+                new SimpleStringSchema(),
+                consumerProps
+        );
+
+        transactionConsumer.setStartFromLatest(); //added
+
+        FlinkKafkaConsumer<String> profileConsumer =
+                new FlinkKafkaConsumer<>(
+                        "profiles-input-topic",
+                        new SimpleStringSchema(),
+                        consumerProps
+                );
+
+        profileConsumer.setStartFromLatest(); //added
+
+
 
         // IMPORTANT:
         // IGNORE OLD HISTORICAL MESSAGES
@@ -177,6 +305,7 @@ public class ShadowFlinkTransformationJob {
         // TRANSFORMATION
         // ====================================================
 
+/*
         var stream = env
                 .addSource(consumer)
                 .map(value -> {
@@ -236,6 +365,77 @@ public class ShadowFlinkTransformationJob {
                     }
                 })
                 .filter(value -> value != null);
+
+        */
+
+
+       var transactions =
+        env.addSource(transactionConsumer)
+                .map(value -> {
+
+                    try {
+
+                        return mapper.readValue(
+                                value,
+                                Transaction.class
+                        );
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+
+                        return null;
+                    }
+                })
+                .filter(v -> v != null);
+
+        var profiles =
+                env.addSource(profileConsumer)
+                        .map(value -> {
+
+                        try {
+
+                                return mapper.readValue(
+                                        value,
+                                        Profile.class
+                                );
+
+                        } catch (Exception e) {
+
+                                e.printStackTrace();
+
+                                return null;
+                        }
+                        })
+                        .filter(v -> v != null);
+
+        var stream =
+                transactions
+                        .keyBy(tx -> tx.userId)
+                        .connect(
+                                profiles.keyBy(
+                                        profile -> profile.userId
+                                )
+                        )
+                        .process(
+                                new ProfileEnrichmentFunction()
+                        )
+                        .map(value -> {
+
+                        try {
+
+                                return mapper.writeValueAsString(
+                                        value
+                                );
+
+                        } catch (Exception e) {
+
+                                e.printStackTrace();
+
+                                return null;
+                        }
+                        })
+                        .filter(v -> v != null);
 
         // ====================================================
         // KAFKA SINK
