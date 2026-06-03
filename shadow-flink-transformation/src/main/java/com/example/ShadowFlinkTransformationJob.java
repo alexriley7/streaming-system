@@ -299,7 +299,7 @@ public class ShadowFlinkTransformationJob {
         // IMPORTANT:
         // IGNORE OLD HISTORICAL MESSAGES
 
-        consumer.setStartFromLatest();
+        //consumer.setStartFromLatest();
 
         // ====================================================
         // TRANSFORMATION
