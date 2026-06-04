@@ -42,27 +42,6 @@ public class ProfileProducer {
 
     public static void main(String[] args) throws Exception {
 
-        boolean enabled = Boolean.parseBoolean(
-                System.getenv()
-                        .getOrDefault(
-                                "ENABLE_PRODUCER",
-                                "true"
-                        )
-        );
-
-        System.out.println(
-                "ENABLE_PRODUCER = " + enabled
-        );
-
-        if (!enabled) {
-
-            System.out.println(
-                    "Profile producer disabled. Exiting."
-            );
-
-            return;
-        }
-
         String broker = System.getenv()
                 .getOrDefault(
                         "KAFKA_BOOTSTRAP_SERVERS",
@@ -93,6 +72,25 @@ public class ProfileProducer {
         Random random = new Random();
 
         while (true) {
+
+            boolean enabled = Boolean.parseBoolean(
+                    System.getenv()
+                            .getOrDefault(
+                                    "ENABLE_PRODUCER",
+                                    "true"
+                            )
+            );
+
+            if (!enabled) {
+
+                System.out.println(
+                        "ENABLE_PRODUCER=false, producer paused"
+                );
+
+                Thread.sleep(30000);
+
+                continue;
+            }
 
             String userId =
                     "user-" + (random.nextInt(100) + 1);
