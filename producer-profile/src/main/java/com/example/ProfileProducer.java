@@ -2,8 +2,8 @@ package com.example;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.Properties;
@@ -42,6 +42,27 @@ public class ProfileProducer {
 
     public static void main(String[] args) throws Exception {
 
+        boolean enabled = Boolean.parseBoolean(
+                System.getenv()
+                        .getOrDefault(
+                                "ENABLE_PRODUCER",
+                                "true"
+                        )
+        );
+
+        System.out.println(
+                "ENABLE_PRODUCER = " + enabled
+        );
+
+        if (!enabled) {
+
+            System.out.println(
+                    "Profile producer disabled. Exiting."
+            );
+
+            return;
+        }
+
         String broker = System.getenv()
                 .getOrDefault(
                         "KAFKA_BOOTSTRAP_SERVERS",
@@ -71,7 +92,6 @@ public class ProfileProducer {
         ObjectMapper mapper = new ObjectMapper();
         Random random = new Random();
 
-        // Generate $$profiles for user-1 through user-100
         while (true) {
 
             String userId =
@@ -90,7 +110,7 @@ public class ProfileProducer {
             ProducerRecord<String, String> record =
                     new ProducerRecord<>(
                             TOPIC,
-                            userId,   // Kafka key
+                            userId,
                             json
                     );
 
@@ -100,7 +120,7 @@ public class ProfileProducer {
                     "PROFILE SENT -> " + json
             );
 
-            Thread.sleep(10000); // every 10 seconds
+            Thread.sleep(10000);
         }
     }
 }
