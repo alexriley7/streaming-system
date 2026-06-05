@@ -10,6 +10,17 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+
+import java.net.URI;
+import java.time.LocalDate;
+
 public class TransactionProducer {
 
     private static final String TOPIC = "input-topic";
@@ -40,6 +51,8 @@ public class TransactionProducer {
 
     public static void main(String[] args) {
 
+        
+
         Properties props = new Properties();
 
         String broker = System.getenv()
@@ -47,6 +60,29 @@ public class TransactionProducer {
                         "KAFKA_BOOTSTRAP_SERVERS",
                         "localhost:9092"
                 );
+
+    // ==========================================
+    // S3 CLIENT
+    // ==========================================
+
+        S3Client s3Client =
+                S3Client.builder()
+                        .endpointOverride(
+                                URI.create(
+                                        "http://moto-s3.default.svc.cluster.local:5000"
+                                )
+                        )
+                        .region(Region.US_EAST_1)
+                        .forcePathStyle(true)
+                        .credentialsProvider(
+                                StaticCredentialsProvider.create(
+                                        AwsBasicCredentials.create(
+                                                "test",
+                                                "test"
+                                        )
+                                )
+                        )
+                        .build();   
 
         // ====================================================
         // KAFKA CONFIG
@@ -136,6 +172,53 @@ public class TransactionProducer {
                 String value =
                         mapper.writeValueAsString(tx);
 
+                // ==========================================
+                // WRITE TO S3
+                // ==========================================
+
+                try {
+
+                    LocalDate today = LocalDate.now();
+
+                    String objectKey =
+                            String.format(
+                                    "%04d/%02d/%02d/%s.json",
+                                    today.getYear(),
+                                    today.getMonthValue(),
+                                    today.getDayOfMonth(),
+                                    tx.eventId
+                            );
+
+                    PutObjectRequest putRequest =
+                            PutObjectRequest.builder()
+                                    .bucket("events")
+                                    .key(objectKey)
+                                    .contentType("application/json")
+                                    .build();
+
+                    s3Client.putObject(
+                            putRequest,
+                            RequestBody.fromString(value)
+                    );
+
+                    System.out.println(
+                            "Saved to S3: s3://events/" +
+                            objectKey
+                    );
+
+                } catch (Exception e) {
+
+                    System.err.println(
+                            "Failed to persist event to S3"
+                    );
+
+                    e.printStackTrace();
+                }
+
+                // ==========================================
+                // WRITE TO KAFKA
+                // ==========================================
+
                 ProducerRecord<String, String> record =
                         new ProducerRecord<>(
                                 TOPIC,
@@ -172,17 +255,24 @@ public class TransactionProducer {
                 );
 
                 Thread.sleep(PRODUCE_INTERVAL_MS);
+
+                
             }
 
-        } catch (Exception e) {
+                } catch (Exception e) {
 
-            e.printStackTrace();
+                    e.printStackTrace();
 
-        } finally {
+                } finally {
 
-            producer.close();
+                    producer.close();
+                    s3Client.close();
+                }
         }
-    }
+
+
+
+
 
     private static Transaction generateTransaction() {
 
