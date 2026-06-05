@@ -1,2 +1,2 @@
-/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/profile-producer/src/main/java/com/example/ProfileProducer.java
-/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/profile-producer/src/main/java/com/example/Profile.java
+/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/producer-profile/src/main/java/com/example/Profile.java
+/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/producer-profile/src/main/java/com/example/ProfileProducer.java
