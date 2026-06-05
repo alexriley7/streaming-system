@@ -182,7 +182,7 @@ public class TransactionProducer {
 
                     String objectKey =
                             String.format(
-                                    "%04d/%02d/%02d/%s.json",
+                                    "transactions/%04d/%02d/%02d/%s.json",
                                     today.getYear(),
                                     today.getMonthValue(),
                                     today.getDayOfMonth(),
