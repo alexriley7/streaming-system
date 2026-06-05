@@ -202,7 +202,7 @@ public class ShadowFlinkTransformationJob {
 
         String outputTopic = System.getenv().getOrDefault(
                 "OUTPUT_TOPIC",
-                "shadow-output-topic"
+                "shadow-output-topic-debug"
         );
 
         // ====================================================
