@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class ProfileProducer {
 
-    private static final String TOPIC = "profiles-input-topic-1";
+    private static final String TOPIC = "profiles-input-topic";
 
     private static final String[] NAMES = {
             "Alice",
