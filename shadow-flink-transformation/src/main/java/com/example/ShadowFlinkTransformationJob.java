@@ -278,7 +278,7 @@ public class ShadowFlinkTransformationJob {
 
         FlinkKafkaConsumer<String> transactionConsumer =
         new FlinkKafkaConsumer<>(
-                "input-topic",
+                "input-topic-debug-a1",
                 new SimpleStringSchema(),
                 consumerProps
         );
@@ -287,7 +287,7 @@ public class ShadowFlinkTransformationJob {
 
         FlinkKafkaConsumer<String> profileConsumer =
                 new FlinkKafkaConsumer<>(
-                        "profiles-input-topic",
+                        "profiles-input-topic-debug-a1",
                         new SimpleStringSchema(),
                         consumerProps
                 );
