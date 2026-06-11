@@ -202,7 +202,7 @@ public class ShadowFlinkTransformationJob {
 
         String outputTopic = System.getenv().getOrDefault(
                 "OUTPUT_TOPIC",
-                "shadow-output-topic-debug"
+                "shadow-output-topic-debug-a1"
         );
 
         // ====================================================
@@ -515,7 +515,7 @@ public class ShadowFlinkTransformationJob {
                         try {
 
                             String key =
-                                    "events/"
+                                    "events/debug/a1"
                                     + Instant.now().toString()
                                     + "-"
                                     + UUID.randomUUID()

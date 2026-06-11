@@ -1,0 +1,6 @@
+com/example/Transaction.class
+com/example/Profile.class
+com/example/ReprocessFlinkTransformationJob.class
+com/example/ProfileEnrichmentFunction.class
+com/example/ReprocessFlinkTransformationJob$1.class
+com/example/EnrichedTransaction.class
