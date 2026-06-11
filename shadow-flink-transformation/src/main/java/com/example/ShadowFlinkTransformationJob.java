@@ -90,6 +90,8 @@ class Profile {
     public String name;
 
     public String country;
+
+    public String eventId;
 }
 
 class ProfileEnrichmentFunction
