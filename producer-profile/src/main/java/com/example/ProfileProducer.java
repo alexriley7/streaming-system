@@ -21,7 +21,7 @@ import java.util.UUID;
 
 public class ProfileProducer {
 
-    private static final String TOPIC = "profiles-input-topic-debug-a2";
+    private static final String TOPIC = "profiles-input-topic-debug-a3";
     private static final String BUCKET = "events";
 
     private static final String[] NAMES = {
@@ -97,7 +97,7 @@ public class ProfileProducer {
             producer.send(record);
 
             // ---------------- S3 (Moto) write ----------------
-            String key = "profiles/debug/a2" + userId + "/" + profile.getEventId() + ".json";
+            String key = "profiles/debug/a3" + userId + "/" + profile.getEventId() + ".json";
 
             s3Client.putObject(
                     PutObjectRequest.builder()

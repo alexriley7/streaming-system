@@ -23,7 +23,7 @@ import java.time.LocalDate;
 
 public class TransactionProducer {
 
-    private static final String TOPIC = "input-topic-debug-a2";
+    private static final String TOPIC = "input-topic-debug-a3";
 
     // 1 event every 60 seconds
     private static final long PRODUCE_INTERVAL_MS = 1_000;
@@ -182,7 +182,7 @@ public class TransactionProducer {
 
                     String objectKey =
                             String.format(
-                                    "transactions/debug/a2/%04d/%02d/%02d/%s.json",
+                                    "transactions/debug/a3/%04d/%02d/%02d/%s.json",
                                     today.getYear(),
                                     today.getMonthValue(),
                                     today.getDayOfMonth(),

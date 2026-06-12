@@ -204,7 +204,7 @@ public class ShadowFlinkTransformationJob {
 
         String outputTopic = System.getenv().getOrDefault(
                 "OUTPUT_TOPIC",
-                "shadow-output-topic-debug-a2"
+                "shadow-output-topic-debug-a3"
         );
 
         // ====================================================
@@ -280,7 +280,7 @@ public class ShadowFlinkTransformationJob {
 
         FlinkKafkaConsumer<String> transactionConsumer =
         new FlinkKafkaConsumer<>(
-                "input-topic-debug-a2",
+                "input-topic-debug-a3",
                 new SimpleStringSchema(),
                 consumerProps
         );
@@ -289,7 +289,7 @@ public class ShadowFlinkTransformationJob {
 
         FlinkKafkaConsumer<String> profileConsumer =
                 new FlinkKafkaConsumer<>(
-                        "profiles-input-topic-debug-a2",
+                        "profiles-input-topic-debug-a3",
                         new SimpleStringSchema(),
                         consumerProps
                 );
