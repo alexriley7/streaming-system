@@ -294,7 +294,7 @@ public class ShadowFlinkTransformationJob {
                         consumerProps
                 );
 
-        profileConsumer.setStartFromLatest(); //added
+        profileConsumer.setStartFromEarliest(); //added
 
 
 

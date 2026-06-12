@@ -111,7 +111,7 @@ public class ProfileProducer {
             System.out.println("PROFILE SENT -> " + json);
             System.out.println("S3 STORED -> s3://" + BUCKET + "/" + key);
 
-            Thread.sleep(10000);
+            Thread.sleep(5000);
         }
     }
 }
