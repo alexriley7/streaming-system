@@ -195,7 +195,7 @@ public class ShadowFlinkTransformationJob {
 
         String groupId = System.getenv().getOrDefault(
                 "GROUP_ID",
-                "flink-consumer-v3"
+                "flink-consumer-v4"
         );
 
         // ====================================================
