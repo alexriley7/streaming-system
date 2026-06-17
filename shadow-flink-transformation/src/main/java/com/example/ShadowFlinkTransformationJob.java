@@ -38,7 +38,7 @@ import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.streaming.api.functions.co.KeyedCoProcessFunction;
 import org.apache.flink.util.Collector;
 
-// expose flink metric to prometheus
+// expose flink metric to prometheus #
 
 
 import org.apache.flink.metrics.Counter;
