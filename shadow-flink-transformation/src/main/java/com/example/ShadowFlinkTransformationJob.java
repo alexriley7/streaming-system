@@ -38,6 +38,14 @@ import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.streaming.api.functions.co.KeyedCoProcessFunction;
 import org.apache.flink.util.Collector;
 
+// expose flink metric to prometheus
+
+
+import org.apache.flink.metrics.Counter;
+import org.apache.flink.metrics.MetricGroup;
+
+
+
 
 // ============================================================
 // TRANSACTION POJO
@@ -103,6 +111,13 @@ class ProfileEnrichmentFunction
 
     private transient ValueState<Profile> profileState;
 
+    
+    private transient Counter nullProfileCounter;
+    private transient Counter enrichedCounter;
+    private transient Counter profileUpdateCounter;
+
+
+
     @Override
     public void open(Configuration parameters) {
 
@@ -114,6 +129,23 @@ class ProfileEnrichmentFunction
 
         profileState =
                 getRuntimeContext().getState(descriptor);
+
+
+        MetricGroup metrics =
+                getRuntimeContext().getMetricGroup();
+
+        nullProfileCounter =
+                metrics.counter("null_profile_count");
+
+        enrichedCounter =
+                metrics.counter("successful_enrichment_count");
+
+        profileUpdateCounter =
+                metrics.counter("profile_update_count");
+
+
+
+
     }
 
     @Override
@@ -145,6 +177,17 @@ class ProfileEnrichmentFunction
 
             enriched.country =
                     profile.country;
+
+            enrichedCounter.inc();
+
+        } else {
+
+                nullProfileCounter.inc();
+
+                System.out.println(
+                        "No profile found for user "
+                        + tx.userId
+                );
         }
 
         out.collect(enriched);
@@ -158,6 +201,8 @@ class ProfileEnrichmentFunction
             throws Exception {
 
         profileState.update(profile);
+
+        profileUpdateCounter.inc();
 
         System.out.println(
                 "Updated profile for "

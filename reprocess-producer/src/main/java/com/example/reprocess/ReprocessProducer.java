@@ -19,11 +19,11 @@ public class ReprocessProducer {
 
     private static final String BUCKET = "events";
 
-    private static final String PROFILE_PREFIX = "profiles/";
-    private static final String TX_PREFIX = "transactions/";
+    private static final String PROFILE_PREFIX = "profiles/debug/a4";
+    private static final String TX_PREFIX = "transactions/debug/a4";
 
-    private static final String PROFILE_TOPIC = "repro-profiles-topic";
-    private static final String TX_TOPIC = "repro-transactions-topic";
+    private static final String PROFILE_TOPIC = "repro-profiles-topic-a4";
+    private static final String TX_TOPIC = "repro-transactions-topic-a4";
 
     public static void main(String[] args) {
 

@@ -40,6 +40,8 @@ import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.streaming.api.functions.co.KeyedCoProcessFunction;
 import org.apache.flink.util.Collector;
 
+import org.apache.flink.api.common.state.ListState;
+import org.apache.flink.api.common.state.ListStateDescriptor;
 
 // ============================================================
 // TRANSACTION POJO
@@ -58,6 +60,8 @@ class Transaction {
 
     public long timestamp;
 }
+
+// what if i add Profile POJO?
 
 
 // ============================================================
@@ -104,8 +108,41 @@ class ProfileEnrichmentFunction
 
     private transient ValueState<Profile> profileState;
 
+//added to wait for profiles:
+
+    private transient ListState<Transaction> pendingTransactions;
+                
+
+//added to wait for profiles:
+
+    private void emitEnriched(
+            Transaction tx,
+            Profile profile,
+            Collector<EnrichedTransaction> out) {
+
+        EnrichedTransaction enriched =
+                new EnrichedTransaction();
+
+        enriched.eventId = tx.eventId;
+        enriched.userId = tx.userId;
+        enriched.transactionId = tx.transactionId;
+        enriched.amount = tx.amount;
+        enriched.currency = tx.currency;
+        enriched.timestamp = tx.timestamp;
+
+        enriched.profileId = profile.profileId;
+        enriched.name = profile.name;
+        enriched.country = profile.country;
+
+        out.collect(enriched);
+        }
+
+
+
+
     @Override
     public void open(Configuration parameters) {
+
 
         ValueStateDescriptor<Profile> descriptor =
                 new ValueStateDescriptor<>(
@@ -115,9 +152,26 @@ class ProfileEnrichmentFunction
 
         profileState =
                 getRuntimeContext().getState(descriptor);
+
+//added to wait for profiles:
+
+        ListStateDescriptor<Transaction> pendingDescriptor =
+                new ListStateDescriptor<>(
+                        "pending-transactions",
+                        Transaction.class
+                );
+
+        pendingTransactions =
+                getRuntimeContext().getListState(pendingDescriptor);
+    
+
+
+
     }
 
-    @Override
+                
+
+    /*@Override
     public void processElement1(
             Transaction tx,
             Context ctx,
@@ -132,6 +186,13 @@ class ProfileEnrichmentFunction
             " profileExists=" +
             (profile != null)
             );
+
+
+        System.out.println(
+            "TX userId=" + tx.userId +
+            " profile=" +
+            (profile == null ? "NULL" : profile.name)
+        );
 
         EnrichedTransaction enriched =
                 new EnrichedTransaction();
@@ -156,8 +217,95 @@ class ProfileEnrichmentFunction
         }
 
         out.collect(enriched);
+     
+
+     modified to wait for profile
+     */
+
+//added to wait for profiles
+
+    @Override
+public void processElement1(
+        Transaction tx,
+        Context ctx,
+        Collector<EnrichedTransaction> out)
+        throws Exception {
+
+    Profile profile = profileState.value();
+
+    System.out.println(
+            "JOIN ATTEMPT userId=" +
+            tx.userId +
+            " profileExists=" +
+            (profile != null)
+    );
+
+    // ----------------------------------------------------
+    // PROFILE NOT AVAILABLE YET
+    // ----------------------------------------------------
+
+    if (profile == null) {
+
+        System.out.println(
+                "BUFFERING TX userId=" +
+                tx.userId
+        );
+
+        pendingTransactions.add(tx);
+
+        return;
     }
 
+    // ----------------------------------------------------
+    // PROFILE EXISTS
+    // ----------------------------------------------------
+
+    System.out.println(
+            "TX userId=" +
+            tx.userId +
+            " profile=" +
+            profile.name
+    );
+
+    EnrichedTransaction enriched =
+            new EnrichedTransaction();
+
+    enriched.eventId =
+            tx.eventId;
+
+    enriched.userId =
+            tx.userId;
+
+    enriched.transactionId =
+            tx.transactionId;
+
+    enriched.amount =
+            tx.amount;
+
+    enriched.currency =
+            tx.currency;
+
+    enriched.timestamp =
+            tx.timestamp;
+
+    enriched.profileId =
+            profile.profileId;
+
+    enriched.name =
+            profile.name;
+
+    enriched.country =
+            profile.country;
+
+    System.out.println(
+            "EMITTING ENRICHED TX userId=" +
+            tx.userId
+    );
+
+    out.collect(enriched);
+}
+
+/*
     @Override
     public void processElement2(
             Profile profile,
@@ -171,8 +319,102 @@ class ProfileEnrichmentFunction
                 "Updated profile for "
                         + profile.userId
         );
+        
+                System.out.println(
+            "STATE UPDATED userId=" +
+            profile.userId
+        );
+
+
     }
 }
+
+*/ //modified to wait for profiles
+
+//added to wait for Profiles:
+
+@Override
+public void processElement2(
+        Profile profile,
+        Context ctx,
+        Collector<EnrichedTransaction> out)
+        throws Exception {
+
+    // ------------------------------------------
+    // UPDATE PROFILE STATE
+    // ------------------------------------------
+
+    profileState.update(profile);
+
+    System.out.println(
+            "Updated profile for "
+                    + profile.userId
+    );
+
+    System.out.println(
+            "STATE UPDATED userId="
+                    + profile.userId
+    );
+
+    // ------------------------------------------
+    // REPLAY BUFFERED TRANSACTIONS
+    // ------------------------------------------
+
+    for (Transaction tx : pendingTransactions.get()) {
+
+        System.out.println(
+                "REPLAYING BUFFERED TX userId="
+                        + tx.userId
+        );
+
+        EnrichedTransaction enriched =
+                new EnrichedTransaction();
+
+        enriched.eventId =
+                tx.eventId;
+
+        enriched.userId =
+                tx.userId;
+
+        enriched.transactionId =
+                tx.transactionId;
+
+        enriched.amount =
+                tx.amount;
+
+        enriched.currency =
+                tx.currency;
+
+        enriched.timestamp =
+                tx.timestamp;
+
+        enriched.profileId =
+                profile.profileId;
+
+        enriched.name =
+                profile.name;
+
+        enriched.country =
+                profile.country;
+
+        System.out.println(
+                "EMITTING ENRICHED TX userId="
+                        + tx.userId
+                        + " profile="
+                        + profile.name
+        );
+
+        out.collect(enriched);
+    }
+
+    // ------------------------------------------
+    // CLEAR BUFFER
+    // ------------------------------------------
+
+    pendingTransactions.clear();
+}
+
+                }
 
 
 // ============================================================
@@ -203,7 +445,7 @@ public class ReprocessFlinkTransformationJob {
 
         String groupId = System.getenv().getOrDefault(
                 "GROUP_ID",
-                "flink-repro-consumer-v01"
+                "flink-repro-consumer-v04"
         );
 
         // ====================================================
@@ -212,7 +454,7 @@ public class ReprocessFlinkTransformationJob {
 
         String outputTopic = System.getenv().getOrDefault(
                 "OUTPUT_TOPIC",
-                "repro-output-topic-1"
+                "repro-output-topic-a7"
         );
 
         // ====================================================
@@ -288,7 +530,7 @@ public class ReprocessFlinkTransformationJob {
 
         FlinkKafkaConsumer<String> transactionConsumer =
         new FlinkKafkaConsumer<>(
-                "repro-transactions-topic",
+                "repro-transactions-topic-a4",
                 new SimpleStringSchema(),
                 consumerProps
         );
@@ -297,7 +539,7 @@ public class ReprocessFlinkTransformationJob {
 
         FlinkKafkaConsumer<String> profileConsumer =
                 new FlinkKafkaConsumer<>(
-                        "repro-profiles-topic",
+                        "repro-profiles-topic-a4",
                         new SimpleStringSchema(),
                         consumerProps
                 );
@@ -540,7 +782,7 @@ public class ReprocessFlinkTransformationJob {
                         try {
 
                             String key =
-                                    "events/repro/enriched"
+                                    "events/repro/debug/a4/enriched"
                                     + Instant.now().toString()
                                     + "-"
                                     + UUID.randomUUID()
