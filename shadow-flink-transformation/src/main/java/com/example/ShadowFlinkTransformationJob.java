@@ -47,6 +47,8 @@ import org.apache.flink.metrics.MetricGroup;
 
 
 
+
+
 // ============================================================
 // TRANSACTION POJO
 // ============================================================
@@ -334,7 +336,7 @@ public class ShadowFlinkTransformationJob {
 
         FlinkKafkaConsumer<String> profileConsumer =
                 new FlinkKafkaConsumer<>(
-                        "profiles-input-topic-debug-a4",
+                        "profiles-input-topic-debug-a4-x",
                         new SimpleStringSchema(),
                         consumerProps
                 );
