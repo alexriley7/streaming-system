@@ -1,2 +1,4 @@
-com/example/TransactionProducer.class
 com/example/Transaction.class
+com/example/TransactionProducer.class
+com/example/avro/TransactionAvro.class
+com/example/avro/TransactionAvro$Builder.class

@@ -1,5 +1,10 @@
 package com.example;
 
+//import com.example.TransactionAvro;
+//import src.main.avro.TransactionAvro;
+
+import com.example.avro.TransactionAvro;
+
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 
@@ -98,10 +103,15 @@ public class TransactionProducer {
                 StringSerializer.class.getName()
         );
 
-        props.put(
-                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                StringSerializer.class.getName()
-        );
+//changed to Schema Registry:
+
+        //props.put(
+        //        ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+        //        StringSerializer.class.getName()
+        //);
+
+
+
 
         // reliability
         props.put(
@@ -119,7 +129,21 @@ public class TransactionProducer {
                 Integer.MAX_VALUE
         );
 
-        KafkaProducer<String, String> producer =
+
+        props.put(
+        ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+        "io.confluent.kafka.serializers.KafkaAvroSerializer"
+        );
+
+        props.put(
+        "schema.registry.url",
+        "http://schema-registry.kafka:8081"
+        );
+
+        System.out.println(props.get(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG));
+        System.out.println(props.get("schema.registry.url"));
+
+        KafkaProducer<String, TransactionAvro> producer =
                 new KafkaProducer<>(props);
 
         // ====================================================
@@ -162,7 +186,7 @@ public class TransactionProducer {
             // PRODUCER LOOP
             // -------------------------------------------------
 
-            while (true) {
+            /*while (true) {
 
                 Transaction tx =
                         generateTransaction();
@@ -258,6 +282,125 @@ public class TransactionProducer {
 
                 
             }
+            */
+
+           // -------------------------------------------------
+                // PRODUCER LOOP
+                // -------------------------------------------------
+
+                while (true) {
+
+                // Existing POJO
+                Transaction tx = generateTransaction();
+
+                // ==========================================
+                // CREATE AVRO OBJECT
+                // ==========================================
+
+                TransactionAvro avroTx =
+                        TransactionAvro.newBuilder()
+                                .setEventId(tx.eventId)
+                                .setUserId(tx.userId)
+                                .setTransactionId(tx.transactionId)
+                                .setAmount(tx.amount)
+                                .setCurrency(tx.currency)
+                                .setTimestamp(tx.timestamp)
+                                .build();
+
+                //String key = avroTx.getUserId();
+                String key = avroTx.getUserId().toString();
+
+                // ==========================================
+                // JSON ONLY FOR S3
+                // ==========================================
+
+                String json =
+                        mapper.writeValueAsString(tx);
+
+                // ==========================================
+                // WRITE TO S3
+                // ==========================================
+
+                try {
+
+                        LocalDate today = LocalDate.now();
+
+                        String objectKey =
+                                String.format(
+                                        "transactions/debug/a4/%04d/%02d/%02d/%s.json",
+                                        today.getYear(),
+                                        today.getMonthValue(),
+                                        today.getDayOfMonth(),
+                                        tx.eventId
+                                );
+
+                        PutObjectRequest putRequest =
+                                PutObjectRequest.builder()
+                                        .bucket("events")
+                                        .key(objectKey)
+                                        .contentType("application/json")
+                                        .build();
+
+                        s3Client.putObject(
+                                putRequest,
+                                RequestBody.fromString(json)
+                        );
+
+                        System.out.println(
+                                "Saved to S3: s3://events/" +
+                                objectKey
+                        );
+
+                } catch (Exception e) {
+
+                        System.err.println(
+                                "Failed to persist event to S3"
+                        );
+
+                        e.printStackTrace();
+                }
+
+                // ==========================================
+                // WRITE AVRO TO KAFKA
+                // ==========================================
+
+                ProducerRecord<String, TransactionAvro> record =
+                        new ProducerRecord<>(
+                                TOPIC,
+                                key,
+                                avroTx
+                        );
+
+                producer.send(
+                        record,
+                        (metadata, exception) -> {
+
+                                if (exception != null) {
+
+                                System.err.println(
+                                        "Failed to send message"
+                                );
+
+                                exception.printStackTrace();
+
+                                } else {
+
+                                System.out.println(
+                                        "Produced eventId=" +
+                                        avroTx.getEventId() +
+                                        " | transactionId=" +
+                                        avroTx.getTransactionId() +
+                                        " | partition=" +
+                                        metadata.partition() +
+                                        " | offset=" +
+                                        metadata.offset()
+                                        );
+                                        }
+                                }
+                                );
+
+                                        Thread.sleep(PRODUCE_INTERVAL_MS);
+                                }
 
                 } catch (Exception e) {
 

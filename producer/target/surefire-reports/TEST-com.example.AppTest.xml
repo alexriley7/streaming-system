@@ -4,7 +4,7 @@
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
     <property name="java.vm.version" value="21.0.11+10-1-22.04.2-Ubuntu"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-21-openjdk-amd64/lib"/>
-    <property name="maven.multiModuleProjectDirectory" value="/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system"/>
+    <property name="maven.multiModuleProjectDirectory" value="/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/producer"/>
     <property name="java.vm.vendor" value="Ubuntu"/>
     <property name="java.vendor.url" value="https://ubuntu.com/"/>
     <property name="guice.disable.misplaced.annotation.check" value="true"/>
@@ -13,7 +13,7 @@
     <property name="user.country" value="US"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="user.dir" value="/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system"/>
+    <property name="user.dir" value="/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/producer"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
     <property name="java.runtime.version" value="21.0.11+10-1-22.04.2-Ubuntu"/>
     <property name="os.arch" value="amd64"/>
@@ -32,7 +32,7 @@
     <property name="java.class.version" value="65.0"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
-    <property name="os.version" value="6.8.0-94-generic"/>
+    <property name="os.version" value="6.8.0-124-generic"/>
     <property name="library.jansi.path" value="/usr/share/maven/lib/jansi-native"/>
     <property name="user.home" value="/home/alex"/>
     <property name="user.timezone" value="America/Argentina/Buenos_Aires"/>
