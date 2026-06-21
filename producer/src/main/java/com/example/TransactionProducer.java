@@ -137,7 +137,7 @@ public class TransactionProducer {
 
         props.put(
         "schema.registry.url",
-        "http://schema-registry.kafka:8081"
+        "http://schema-registry.kafka:8089"
         );
 
         System.out.println(props.get(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG));
