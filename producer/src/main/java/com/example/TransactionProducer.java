@@ -303,7 +303,7 @@ public class TransactionProducer {
                                 .setUserId(tx.userId)
                                 .setTransactionId(tx.transactionId)
                                 .setAmount(tx.amount)
-                                .setCurrency(tx.currency)
+                                .setCurrency_type(tx.currency_type)
                                 .setTimestamp(tx.timestamp)
                                 .build();
 
@@ -459,7 +459,7 @@ public class TransactionProducer {
                         random.nextDouble() * 1000 * 100.0
                 ) / 100.0;
 
-        String currency = "USDT";
+        String currency_type = "USDT";
 
         long timestamp =
                 System.currentTimeMillis();
@@ -472,7 +472,7 @@ public class TransactionProducer {
                 userId,
                 txId,
                 amount,
-                currency,
+                currency_type,
                 timestamp
         );
 

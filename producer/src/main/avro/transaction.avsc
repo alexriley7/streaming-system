@@ -20,7 +20,7 @@
       "type": "double"
     },
     {
-      "name": "currency",
+      "name": "currency_type",
       "type": "string"
     },
     {

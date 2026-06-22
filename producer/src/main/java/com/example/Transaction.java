@@ -14,13 +14,13 @@ class Transaction {
             String userId,
             String transactionId,
             double amount,
-            String currency,
+            String currency_type,
             long timestamp
     ) {
         this.userId = userId;
         this.transactionId = transactionId;
         this.amount = amount;
-        this.currency = currency;
+        this.currency_type = currency_type;
         this.timestamp = timestamp;
     }
 }
