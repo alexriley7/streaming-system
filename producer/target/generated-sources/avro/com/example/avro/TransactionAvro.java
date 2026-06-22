@@ -14,10 +14,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class TransactionAvro extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 5012686901204316295L;
+  private static final long serialVersionUID = 126903152433200452L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"TransactionAvro\",\"namespace\":\"com.example.avro\",\"fields\":[{\"name\":\"eventId\",\"type\":\"string\"},{\"name\":\"userId\",\"type\":\"string\"},{\"name\":\"transactionId\",\"type\":\"string\"},{\"name\":\"amount\",\"type\":\"double\"},{\"name\":\"currency\",\"type\":\"string\"},{\"name\":\"timestamp\",\"type\":\"long\"}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"TransactionAvro\",\"namespace\":\"com.example.avro\",\"fields\":[{\"name\":\"eventId\",\"type\":\"string\"},{\"name\":\"userId\",\"type\":\"string\"},{\"name\":\"transactionId\",\"type\":\"string\"},{\"name\":\"amount\",\"type\":\"double\"},{\"name\":\"currency_type\",\"type\":\"string\"},{\"name\":\"timestamp\",\"type\":\"long\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -77,7 +77,7 @@ public class TransactionAvro extends org.apache.avro.specific.SpecificRecordBase
   private java.lang.CharSequence userId;
   private java.lang.CharSequence transactionId;
   private double amount;
-  private java.lang.CharSequence currency;
+  private java.lang.CharSequence currency_type;
   private long timestamp;
 
   /**
@@ -93,15 +93,15 @@ public class TransactionAvro extends org.apache.avro.specific.SpecificRecordBase
    * @param userId The new value for userId
    * @param transactionId The new value for transactionId
    * @param amount The new value for amount
-   * @param currency The new value for currency
+   * @param currency_type The new value for currency_type
    * @param timestamp The new value for timestamp
    */
-  public TransactionAvro(java.lang.CharSequence eventId, java.lang.CharSequence userId, java.lang.CharSequence transactionId, java.lang.Double amount, java.lang.CharSequence currency, java.lang.Long timestamp) {
+  public TransactionAvro(java.lang.CharSequence eventId, java.lang.CharSequence userId, java.lang.CharSequence transactionId, java.lang.Double amount, java.lang.CharSequence currency_type, java.lang.Long timestamp) {
     this.eventId = eventId;
     this.userId = userId;
     this.transactionId = transactionId;
     this.amount = amount;
-    this.currency = currency;
+    this.currency_type = currency_type;
     this.timestamp = timestamp;
   }
 
@@ -119,7 +119,7 @@ public class TransactionAvro extends org.apache.avro.specific.SpecificRecordBase
     case 1: return userId;
     case 2: return transactionId;
     case 3: return amount;
-    case 4: return currency;
+    case 4: return currency_type;
     case 5: return timestamp;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
@@ -134,7 +134,7 @@ public class TransactionAvro extends org.apache.avro.specific.SpecificRecordBase
     case 1: userId = (java.lang.CharSequence)value$; break;
     case 2: transactionId = (java.lang.CharSequence)value$; break;
     case 3: amount = (java.lang.Double)value$; break;
-    case 4: currency = (java.lang.CharSequence)value$; break;
+    case 4: currency_type = (java.lang.CharSequence)value$; break;
     case 5: timestamp = (java.lang.Long)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
@@ -209,20 +209,20 @@ public class TransactionAvro extends org.apache.avro.specific.SpecificRecordBase
   }
 
   /**
-   * Gets the value of the 'currency' field.
-   * @return The value of the 'currency' field.
+   * Gets the value of the 'currency_type' field.
+   * @return The value of the 'currency_type' field.
    */
-  public java.lang.CharSequence getCurrency() {
-    return currency;
+  public java.lang.CharSequence getCurrencyType() {
+    return currency_type;
   }
 
 
   /**
-   * Sets the value of the 'currency' field.
+   * Sets the value of the 'currency_type' field.
    * @param value the value to set.
    */
-  public void setCurrency(java.lang.CharSequence value) {
-    this.currency = value;
+  public void setCurrencyType(java.lang.CharSequence value) {
+    this.currency_type = value;
   }
 
   /**
@@ -287,7 +287,7 @@ public class TransactionAvro extends org.apache.avro.specific.SpecificRecordBase
     private java.lang.CharSequence userId;
     private java.lang.CharSequence transactionId;
     private double amount;
-    private java.lang.CharSequence currency;
+    private java.lang.CharSequence currency_type;
     private long timestamp;
 
     /** Creates a new Builder */
@@ -317,8 +317,8 @@ public class TransactionAvro extends org.apache.avro.specific.SpecificRecordBase
         this.amount = data().deepCopy(fields()[3].schema(), other.amount);
         fieldSetFlags()[3] = other.fieldSetFlags()[3];
       }
-      if (isValidValue(fields()[4], other.currency)) {
-        this.currency = data().deepCopy(fields()[4].schema(), other.currency);
+      if (isValidValue(fields()[4], other.currency_type)) {
+        this.currency_type = data().deepCopy(fields()[4].schema(), other.currency_type);
         fieldSetFlags()[4] = other.fieldSetFlags()[4];
       }
       if (isValidValue(fields()[5], other.timestamp)) {
@@ -349,8 +349,8 @@ public class TransactionAvro extends org.apache.avro.specific.SpecificRecordBase
         this.amount = data().deepCopy(fields()[3].schema(), other.amount);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.currency)) {
-        this.currency = data().deepCopy(fields()[4].schema(), other.currency);
+      if (isValidValue(fields()[4], other.currency_type)) {
+        this.currency_type = data().deepCopy(fields()[4].schema(), other.currency_type);
         fieldSetFlags()[4] = true;
       }
       if (isValidValue(fields()[5], other.timestamp)) {
@@ -519,41 +519,41 @@ public class TransactionAvro extends org.apache.avro.specific.SpecificRecordBase
     }
 
     /**
-      * Gets the value of the 'currency' field.
+      * Gets the value of the 'currency_type' field.
       * @return The value.
       */
-    public java.lang.CharSequence getCurrency() {
-      return currency;
+    public java.lang.CharSequence getCurrencyType() {
+      return currency_type;
     }
 
 
     /**
-      * Sets the value of the 'currency' field.
-      * @param value The value of 'currency'.
+      * Sets the value of the 'currency_type' field.
+      * @param value The value of 'currency_type'.
       * @return This builder.
       */
-    public com.example.avro.TransactionAvro.Builder setCurrency(java.lang.CharSequence value) {
+    public com.example.avro.TransactionAvro.Builder setCurrencyType(java.lang.CharSequence value) {
       validate(fields()[4], value);
-      this.currency = value;
+      this.currency_type = value;
       fieldSetFlags()[4] = true;
       return this;
     }
 
     /**
-      * Checks whether the 'currency' field has been set.
-      * @return True if the 'currency' field has been set, false otherwise.
+      * Checks whether the 'currency_type' field has been set.
+      * @return True if the 'currency_type' field has been set, false otherwise.
       */
-    public boolean hasCurrency() {
+    public boolean hasCurrencyType() {
       return fieldSetFlags()[4];
     }
 
 
     /**
-      * Clears the value of the 'currency' field.
+      * Clears the value of the 'currency_type' field.
       * @return This builder.
       */
-    public com.example.avro.TransactionAvro.Builder clearCurrency() {
-      currency = null;
+    public com.example.avro.TransactionAvro.Builder clearCurrencyType() {
+      currency_type = null;
       fieldSetFlags()[4] = false;
       return this;
     }
@@ -606,7 +606,7 @@ public class TransactionAvro extends org.apache.avro.specific.SpecificRecordBase
         record.userId = fieldSetFlags()[1] ? this.userId : (java.lang.CharSequence) defaultValue(fields()[1]);
         record.transactionId = fieldSetFlags()[2] ? this.transactionId : (java.lang.CharSequence) defaultValue(fields()[2]);
         record.amount = fieldSetFlags()[3] ? this.amount : (java.lang.Double) defaultValue(fields()[3]);
-        record.currency = fieldSetFlags()[4] ? this.currency : (java.lang.CharSequence) defaultValue(fields()[4]);
+        record.currency_type = fieldSetFlags()[4] ? this.currency_type : (java.lang.CharSequence) defaultValue(fields()[4]);
         record.timestamp = fieldSetFlags()[5] ? this.timestamp : (java.lang.Long) defaultValue(fields()[5]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
@@ -648,7 +648,7 @@ public class TransactionAvro extends org.apache.avro.specific.SpecificRecordBase
 
     out.writeDouble(this.amount);
 
-    out.writeString(this.currency);
+    out.writeString(this.currency_type);
 
     out.writeLong(this.timestamp);
 
@@ -667,7 +667,7 @@ public class TransactionAvro extends org.apache.avro.specific.SpecificRecordBase
 
       this.amount = in.readDouble();
 
-      this.currency = in.readString(this.currency instanceof Utf8 ? (Utf8)this.currency : null);
+      this.currency_type = in.readString(this.currency_type instanceof Utf8 ? (Utf8)this.currency_type : null);
 
       this.timestamp = in.readLong();
 
@@ -691,7 +691,7 @@ public class TransactionAvro extends org.apache.avro.specific.SpecificRecordBase
           break;
 
         case 4:
-          this.currency = in.readString(this.currency instanceof Utf8 ? (Utf8)this.currency : null);
+          this.currency_type = in.readString(this.currency_type instanceof Utf8 ? (Utf8)this.currency_type : null);
           break;
 
         case 5:

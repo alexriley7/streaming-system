@@ -303,7 +303,7 @@ public class TransactionProducer {
                                 .setUserId(tx.userId)
                                 .setTransactionId(tx.transactionId)
                                 .setAmount(tx.amount)
-                                .setCurrency_type(tx.currency_type)
+                                .setCurrencyType(tx.currency_type)
                                 .setTimestamp(tx.timestamp)
                                 .build();
 

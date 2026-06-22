@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="1" failures="0" name="com.example.AppTest" time="0.003" errors="0" skipped="0">
+<testsuite tests="1" failures="0" name="com.example.AppTest" time="0.012" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
     <property name="java.vm.version" value="21.0.11+10-1-22.04.2-Ubuntu"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-21-openjdk-amd64/lib"/>
-    <property name="maven.multiModuleProjectDirectory" value="/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/producer"/>
+    <property name="maven.multiModuleProjectDirectory" value="/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system"/>
     <property name="java.vm.vendor" value="Ubuntu"/>
     <property name="java.vendor.url" value="https://ubuntu.com/"/>
     <property name="guice.disable.misplaced.annotation.check" value="true"/>
@@ -13,7 +13,7 @@
     <property name="user.country" value="US"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="user.dir" value="/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/producer"/>
+    <property name="user.dir" value="/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
     <property name="java.runtime.version" value="21.0.11+10-1-22.04.2-Ubuntu"/>
     <property name="os.arch" value="amd64"/>
@@ -57,5 +57,5 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="sun.cpu.endian" value="little"/>
   </properties>
-  <testcase classname="com.example.AppTest" name="testApp" time="0.003"/>
+  <testcase classname="com.example.AppTest" name="testApp" time="0.012"/>
 </testsuite>
