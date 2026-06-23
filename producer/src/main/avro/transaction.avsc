@@ -20,11 +20,15 @@
       "type": "double"
     },
     {
-      "name": "currency_type",
+      "name": "currency",
       "type": "string"
     },
     {
       "name": "timestamp",
+      "type": "long"
+    },
+      {
+      "name": "timestamp_b",
       "type": "long"
     }
   ]

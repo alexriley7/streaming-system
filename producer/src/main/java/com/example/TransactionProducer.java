@@ -303,8 +303,9 @@ public class TransactionProducer {
                                 .setUserId(tx.userId)
                                 .setTransactionId(tx.transactionId)
                                 .setAmount(tx.amount)
-                                .setCurrencyType(tx.currency_type)
+                                .setCurrency(tx.currency)
                                 .setTimestamp(tx.timestamp)
+                                .setTimestamp_b(tx.timestamp_b)
                                 .build();
 
                 //String key = avroTx.getUserId();
@@ -461,9 +462,12 @@ public class TransactionProducer {
                         random.nextDouble() * 1000 * 100.0
                 ) / 100.0;
 
-        String currency_type = "USDT";
+        String currency = "USDT";
 
         long timestamp =
+                System.currentTimeMillis();
+
+        long timestamp_b =
                 System.currentTimeMillis();
 
         // ====================================================
@@ -474,8 +478,9 @@ public class TransactionProducer {
                 userId,
                 txId,
                 amount,
-                currency_type,
-                timestamp
+                currency,
+                timestamp,
+                timestamp_b
         );
 
         // ADD EVENT ID
