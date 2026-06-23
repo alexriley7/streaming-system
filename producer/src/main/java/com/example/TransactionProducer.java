@@ -305,7 +305,7 @@ public class TransactionProducer {
                                 .setAmount(tx.amount)
                                 .setCurrency(tx.currency)
                                 .setTimestamp(tx.timestamp)
-                                .setTimestamp_b(tx.timestamp_b)
+                                .setTimestampB(tx.timestamp_b)
                                 .build();
 
                 //String key = avroTx.getUserId();

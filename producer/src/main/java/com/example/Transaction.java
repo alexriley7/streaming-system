@@ -7,7 +7,7 @@ class Transaction {
     public String userId;
     public String transactionId;
     public double amount;
-    public String currency_type;
+    public String currency;
     public long timestamp;
     public long timestamp_b;
 
@@ -15,14 +15,14 @@ class Transaction {
             String userId,
             String transactionId,
             double amount,
-            String currency_type,
+            String currency,
             long timestamp,
             long timestamp_b
     ) {
         this.userId = userId;
         this.transactionId = transactionId;
         this.amount = amount;
-        this.currency_type = currency_type;
+        this.currency = currency;
         this.timestamp = timestamp;
         this.timestamp_b = timestamp_b;
     }
