@@ -364,6 +364,8 @@ public class TransactionProducer {
                 // WRITE AVRO TO KAFKA
                 // ==========================================
 
+                System.out.println(avroTx.getSchema().toString(true));
+
                 ProducerRecord<String, TransactionAvro> record =
                         new ProducerRecord<>(
                                 TOPIC,
