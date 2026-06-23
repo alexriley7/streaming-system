@@ -29,7 +29,8 @@
     },
       {
       "name": "timestamp_b",
-      "type": "long"
+      "type": "long",
+      "default": 0
     }
   ]
 }
