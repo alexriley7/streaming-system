@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+
+metadata:
+  name: pipeline-validator
+
+spec:
+
+  backoffLimit: 0
+
+  template:
+
+    spec:
+
+      restartPolicy: Never
+
+      containers:
+
+      - name: validator
+
+        image: pipeline-validator:latest
+
+        imagePullPolicy: IfNotPresent
+
+        env:
+
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
+
+        - name: SCHEMA_REGISTRY_URL
+          value: http://schema-registry.kafka.svc.cluster.local:8089
+
+        - name: TRANSACTION_TOPIC
+          value: input-topic-debug-b1
+
+        - name: PROFILE_TOPIC
+          value: profiles-input-topic-debug-b1
+
+        - name: SHADOW_OUTPUT_TOPIC
+          value: shadow-output-topic-debug-b1
+
+        - name: VALIDATION_TIMEOUT_SECONDS
+          value: "30"

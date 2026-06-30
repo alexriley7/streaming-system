@@ -1,0 +1,18 @@
+{
+  "namespace": "com.example.avro",
+  "type": "record",
+  "name": "TransactionAvro",
+  "fields": [
+    { "name": "eventId", "type": "string" },
+    { "name": "userId", "type": "string" },
+    { "name": "transactionId", "type": "string" },
+    { "name": "amount", "type": "double" },
+    { "name": "currency", "type": "string" },
+    { "name": "timestamp", "type": "long" },
+    {
+      "name": "timestamp_b",
+      "type": "long",
+      "default": 0
+    }
+  ]
+}

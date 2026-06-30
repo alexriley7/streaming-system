@@ -15,7 +15,7 @@
     <artifactId>flink-transformation</artifactId>
     <packaging>jar</packaging>
 
-    <name>Flink Transformation Job</name>
+    <name>flink-transformation-job</name>
 
     <!-- Properties -->
     <properties>
@@ -51,6 +51,18 @@
             <version>2.0.9</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-files</artifactId>
+            <version>1.18.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>2.25.26</version>
+        </dependency>
+
     </dependencies>
 
     <!-- Build -->
@@ -58,7 +70,7 @@
         <plugins>
 
             <!-- Java version -->
-
+    
 
             <!-- FAT JAR (CRITICAL for Kubernetes) -->
             <plugin>

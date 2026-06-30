@@ -1,0 +1,11 @@
+/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/pipeline-validator/src/main/java/com/example/validator/App.java
+/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/pipeline-validator/src/main/java/com/example/validator/ValidatorApplication.java
+/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/pipeline-validator/src/main/java/com/example/validator/config/KafkaConfig.java
+/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/pipeline-validator/src/main/java/com/example/validator/consumer/ShadowOutputConsumer.java
+/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/pipeline-validator/src/main/java/com/example/validator/model/OutputEvent.java
+/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/pipeline-validator/src/main/java/com/example/validator/model/Profile.java
+/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/pipeline-validator/src/main/java/com/example/validator/producer/ProfileProducer.java
+/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/pipeline-validator/src/main/java/com/example/validator/producer/TransactionProducer.java
+/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/pipeline-validator/src/main/java/com/example/validator/util/RetryUtils.java
+/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/pipeline-validator/src/main/java/com/example/validator/validation/EventValidator.java
+/home/alex/Documents/Projects/k8-kafka-cicd/streaming-app/streaming-system/pipeline-validator/src/main/java/com/example/validator/validation/ValidationResult.java

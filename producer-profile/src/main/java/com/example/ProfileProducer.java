@@ -21,7 +21,7 @@ import java.util.UUID;
 
 public class ProfileProducer {
 
-    private static final String TOPIC = "profiles-input-topic-debug-a4";
+    private static final String TOPIC = "profiles-input-topic-debug-b1";
     private static final String BUCKET = "events";
 
     private static final String[] NAMES = {

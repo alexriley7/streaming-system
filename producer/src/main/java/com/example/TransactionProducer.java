@@ -28,7 +28,7 @@ import java.time.LocalDate;
 
 public class TransactionProducer {
 
-    private static final String TOPIC = "input-topic-debug-a4";
+    private static final String TOPIC = "input-topic-debug-b1";
 
     // 1 event every 60 seconds
     private static final long PRODUCE_INTERVAL_MS = 1_000;

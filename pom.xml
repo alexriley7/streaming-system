@@ -1,23 +1,20 @@
-<project>
+<?xml version="1.0" encoding="UTF-8"?><project>
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>com.example</groupId>
   <artifactId>streaming-system</artifactId>
   <version>1.0-SNAPSHOT</version>
-
   <packaging>pom</packaging>
-
   <modules>
     <module>producer</module>
     <module>producer-profile</module>
     <module>consumer</module>
     <module>flink-transformation</module>
     <module>shadow-flink-transformation</module>
+    <module>pipeline-validator</module>
   </modules>
-
   <properties>
     <java.version>17</java.version>
-      <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -35,5 +32,4 @@
       </plugins>
     </pluginManagement>
   </build>
-
 </project>

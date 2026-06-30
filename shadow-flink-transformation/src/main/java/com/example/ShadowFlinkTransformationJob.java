@@ -242,7 +242,7 @@ public class ShadowFlinkTransformationJob {
 
         String groupId = System.getenv().getOrDefault(
                 "GROUP_ID",
-                "flink-consumer-v4"
+                "shadow-flink-consumer-v5"
         );
 
         // ====================================================
@@ -251,7 +251,7 @@ public class ShadowFlinkTransformationJob {
 
         String outputTopic = System.getenv().getOrDefault(
                 "OUTPUT_TOPIC",
-                "shadow-output-topic-debug-a4"
+                "shadow-output-topic-debug-b1"
         );
 
         // ====================================================
@@ -327,7 +327,7 @@ public class ShadowFlinkTransformationJob {
 
         FlinkKafkaConsumer<String> transactionConsumer =
         new FlinkKafkaConsumer<>(
-                "input-topic-debug-a4",
+                "input-topic-debug-b1",
                 new SimpleStringSchema(),
                 consumerProps
         );
@@ -336,7 +336,7 @@ public class ShadowFlinkTransformationJob {
 
         FlinkKafkaConsumer<String> profileConsumer =
                 new FlinkKafkaConsumer<>(
-                        "profiles-input-topic-debug-a4-x",
+                        "profiles-input-topic-debug-b1",
                         new SimpleStringSchema(),
                         consumerProps
                 );
@@ -564,7 +564,7 @@ public class ShadowFlinkTransformationJob {
                         try {
 
                             String key =
-                                    "events/debug/a4"
+                                    "events/debug/b1"
                                     + Instant.now().toString()
                                     + "-"
                                     + UUID.randomUUID()
