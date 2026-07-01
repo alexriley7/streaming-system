@@ -9,7 +9,7 @@ RUN cp /opt/flink/opt/flink-s3-fs-hadoop-1.18*.jar \
     /opt/flink/plugins/s3-fs-hadoop/
 
 # Optional: better logging
-ENV FLINK_PROPERTIES="jobmanager.rpc.address: localhost"
+#ENV FLINK_PROPERTIES="jobmanager.rpc.address: localhost"
 
 #RUN cp /opt/flink/opt/flink-s3-fs-hadoop-*.jar /opt/flink/lib/
 
