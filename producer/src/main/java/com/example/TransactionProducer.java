@@ -31,7 +31,7 @@ public class TransactionProducer {
     private static final String TOPIC = "input-topic-debug-b1";
 
     // 1 event every 60 seconds
-    private static final long PRODUCE_INTERVAL_MS = 1_000;
+    private static final long PRODUCE_INTERVAL_MS = 10_000;
 
     private static final Random random = new Random();
 
