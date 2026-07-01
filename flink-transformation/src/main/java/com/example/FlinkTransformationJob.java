@@ -246,7 +246,7 @@ public class FlinkTransformationJob {
         );
 
         // ====================================================
-        // OUTPUT TOPIC
+        // OUTPUT TOPIC /
         // ====================================================
 
         String outputTopic = System.getenv().getOrDefault(
