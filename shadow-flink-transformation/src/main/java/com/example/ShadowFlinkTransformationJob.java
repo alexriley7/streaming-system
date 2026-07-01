@@ -225,7 +225,7 @@ public class ShadowFlinkTransformationJob {
         final StreamExecutionEnvironment env =
                 StreamExecutionEnvironment.getExecutionEnvironment();
 
-        env.setParallelism(3);
+        env.setParallelism(1);
 
         env.enableCheckpointing(30000); // added
 
