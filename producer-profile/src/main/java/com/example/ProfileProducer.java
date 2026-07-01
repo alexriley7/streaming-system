@@ -97,7 +97,7 @@ public class ProfileProducer {
             producer.send(record);
 
             // ---------------- S3 (Moto) write ----------------
-            String key = "profiles/debug/a4" + userId + "/" + profile.getEventId() + ".json";
+            String key = "profiles/debug/b1" + userId + "/" + profile.getEventId() + ".json";
 
             s3Client.putObject(
                     PutObjectRequest.builder()
