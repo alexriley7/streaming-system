@@ -255,7 +255,7 @@ public class ShadowFlinkTransformationJob {
         );
 
         // ====================================================
-        // FEATURE FLAG
+        // FEATURE FLAG //
         // ====================================================
 
         boolean enabled = Boolean.parseBoolean(
